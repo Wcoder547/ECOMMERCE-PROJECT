@@ -10,6 +10,8 @@ app.get("/",(req,res)=>{
     res.send('API working with/api/v1')
 })
 app.use(express.json())
+app.use('/uploads',express.static("uploads"))
+
 
 import connectDb from "./utils/features.js";
 connectDb()
@@ -31,4 +33,5 @@ connectDb()
 //using Routes
 app.use("/api/v1/user",userRouter)
 app.use("/api/v1/product",productRoute)
+
 

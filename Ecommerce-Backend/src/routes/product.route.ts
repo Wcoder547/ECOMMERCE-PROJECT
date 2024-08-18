@@ -1,15 +1,23 @@
 
 import express from "express"
 import { singleUpload } from "../middlewares/multer.middleware.js";
-import { newProduct } from "../controllers/product.controller.js";
+import { adminProducts, delteProduct, getCategories, getLatestProduct, getSingleProduct, newProduct, updateProduct } from "../controllers/product.controller.js";
+import { AdminOnly } from "../middlewares/auth.middleware.js";
 const app = express.Router();
 
 
-//route - api/v1/user/product
-app.post("/new",singleUpload,newProduct)
+//New-products - api/v1/product/new
+app.post("/new",AdminOnly,singleUpload,newProduct)
 
+//Latest-products - api/v1/product/latest
+app.get('/latest',getLatestProduct)
 
+//to get all categories - api/v1/product/categories
+app.get('/categories',getCategories)
 
+//to get all products/admin - api/v1/product/products
+app.get('/admin-products',adminProducts)
 
+app.route('/:id').get(getSingleProduct).put(AdminOnly,singleUpload,updateProduct).delete(AdminOnly,delteProduct)
 
 export default app;

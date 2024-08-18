@@ -62,13 +62,13 @@ export const newUser = TryCatch(
 export const getUser =TryCatch(async(req,res,next)=>{
 const id = req.params.id
 if(!id){
-    return next(new ErrorHandler("invalid id ",400))
+    return next(new ErrorHandler("please provide ID ",400))
 }
     const user= await User.findById(id)
     if(!user){
         return res.status(404).json({
             success:false,
-            message:"user not existed"
+            message:"Invalid ID"
         })
     }
     return res.status(200).json({

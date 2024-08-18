@@ -11,9 +11,8 @@ export interface newRequestBody {
 export interface newProductRequestBody {
   name: string;
   category:string;
- price:number;
- stock:number,
- 
+  price:number;
+  stock:number,
 }
 
 export type controllerType = (
