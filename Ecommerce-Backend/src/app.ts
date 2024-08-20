@@ -3,6 +3,7 @@ import connectDb from "./utils/features.js";
 import userRouter from "./routes/user.route.js";
 import productRoute from "./routes/product.route.js";
 import orderRoute from "./routes/order.route.js";
+import paymentRouter from "./routes/payment.route.js";
 import NodeCache from "node-cache";
 import { config } from "dotenv";
 import morgan from "morgan";
@@ -39,3 +40,4 @@ connectDb()
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/product", productRoute);
 app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/payment", paymentRouter);

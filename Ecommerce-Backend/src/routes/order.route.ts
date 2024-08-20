@@ -7,16 +7,17 @@ import {
   newOrder,
   processOrder,
 } from "../controllers/order.controller.js";
+import { AdminOnly } from "../middlewares/auth.middleware.js";
 
 const app = express.Router();
 
-//route - api/v1/user/order/new
+//route - /api/v1/orde/new
 app.post("/new", newOrder);
-//route - api/v1/user/order/myorders
+//route - api/v1/order/myorders
 app.get("/myorders", myOrders);
-//route - api/v1/user/order/All
-app.get("/All", allOrders);
-//route - api/v1/user/order/78364dh
+//route - api/v1/order/All
+app.get("/All", AdminOnly, allOrders);
+//route - api/v1/order/78364dh
 app.route("/:id").get(getSingleOrder).put(processOrder).delete(deleteOrder);
 
 export default app;

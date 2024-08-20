@@ -5,6 +5,7 @@ import { Order } from "../models/order.model.js";
 import { invalidateCache, reduceStock } from "../utils/features.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { nodeCache } from "../app.js";
+import { isValidObjectId } from "mongoose";
 
 export const newOrder = TryCatch(
   async (req: Request<{}, {}, newOrderRequestBody>, res, next) => {
@@ -26,9 +27,12 @@ export const newOrder = TryCatch(
       !shippingCharges ||
       !discount ||
       !total ||
-      orderitems
+      !orderitems
     ) {
-      return next(new ErrorHandler("Please input all fields!", 400));
+      return res.status(400).json({
+        success: true,
+        message: "please input all fields",
+      });
     }
 
     const order = await Order.create({
@@ -94,6 +98,9 @@ export const allOrders = TryCatch(async (req, res, next) => {
 
 export const getSingleOrder = TryCatch(async (req, res, next) => {
   const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return next(new ErrorHandler("Invalid ID", 400));
+  }
   let singleOrder;
   const key = `order-${id}`;
   if (nodeCache.has(key))
@@ -112,8 +119,8 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
 
 export const processOrder = TryCatch(async (req, res, next) => {
   const { id } = req.params;
-  if (!id) {
-    return next(new ErrorHandler("id not found!!", 404));
+  if (!isValidObjectId(id)) {
+    return next(new ErrorHandler("Invalid ID", 400));
   }
 
   const order = await Order.findById(id);
@@ -147,8 +154,8 @@ export const processOrder = TryCatch(async (req, res, next) => {
 });
 export const deleteOrder = TryCatch(async (req, res, next) => {
   const { id } = req.params;
-  if (!id) {
-    return next(new ErrorHandler("id not found!!", 404));
+  if (!isValidObjectId(id)) {
+    return next(new ErrorHandler("Invalid ID", 400));
   }
 
   const order = await Order.findById(id);
