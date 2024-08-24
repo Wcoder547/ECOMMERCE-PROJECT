@@ -4,16 +4,20 @@ import userRouter from "./routes/user.route.js";
 import productRoute from "./routes/product.route.js";
 import orderRoute from "./routes/order.route.js";
 import paymentRouter from "./routes/payment.route.js";
+import dashboardRouter from "./routes/stats.route.js";
 import NodeCache from "node-cache";
 import { config } from "dotenv";
 import morgan from "morgan";
+import Stripe from "stripe";
 
 config({
   path: "./.env",
 });
 const port = process.env.PORT || 4000;
+const stripeKey = process.env.STRIPE_KEY || "";
 const app = express();
 app.use(morgan("dev"));
+export const stripe = new Stripe(stripeKey);
 export const nodeCache = new NodeCache();
 app.get("/", (req, res) => {
   res.send("API working with/api/v1");
@@ -41,3 +45,4 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/product", productRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/payment", paymentRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
