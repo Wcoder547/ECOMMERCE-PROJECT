@@ -20,7 +20,7 @@ export const getLatestProduct = TryCatch(async (req, res, next) => {
     products = await Prodcut.find({}).sort({ createdAt: -1 }).limit(5);
     nodeCache.set("latest-product", JSON.stringify(products));
   }
-
+  invalidateCache({ product: true });
   return res.status(200).json({
     success: true,
     products,

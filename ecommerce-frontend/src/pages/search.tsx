@@ -1,17 +1,61 @@
 import { useState } from "react";
 import ProductCard from "../components/productCard";
+import {
+  useCategoriesQuery,
+  useSearchProductsQuery,
+} from "../redux/api/productApi";
+import { customError } from "../types/api-types";
+import toast from "react-hot-toast";
+import { server } from "../redux/store";
+import { Skelton } from "../components/loader";
+import { cartItem } from "../types/types";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/reducer/cartReducer";
 
 const Search = () => {
+  const dispatch = useDispatch();
+  const {
+    data: categoriesResponse,
+    isError,
+    error,
+    isLoading: isLoadingCategories,
+  } = useCategoriesQuery("");
   const [sort, setsort] = useState("");
   const [maxprice, setmaxprice] = useState(100000);
   const [category, setcategory] = useState("");
   const [search, setsearch] = useState("");
   const [page, setpage] = useState(1);
-  const addToCartHandler = () => {
-    return {};
+
+  const {
+    isLoading: productLoading,
+    data: searchData,
+    isError: productisError,
+    error: productError,
+  } = useSearchProductsQuery({
+    sort,
+    search,
+    page,
+    category,
+    price: maxprice,
+  });
+  // console.log(searchData);
+
+  const addToCartHandler = (cartItem: cartItem) => {
+    if (cartItem.stock < 1) return toast.error("out of stock");
+    dispatch(addToCart(cartItem));
+    toast.success("added to cart!!");
   };
   const nextpage = true;
   const prevpage = false;
+
+  if (isError) {
+    const err = error as customError;
+    toast.error(err.data.message);
+  }
+  if (productisError) {
+    const err = productError as customError;
+    toast.error(err.data.message);
+  }
   return (
     <div className="product-search-page">
       <aside>
@@ -40,8 +84,12 @@ const Search = () => {
             value={category}
             onChange={(e) => setcategory(e.target.value)}>
             <option value="">All</option>
-            <option value="sample1">Sample1</option>
-            <option value="sample2">Sample2</option>
+            {!isLoadingCategories &&
+              categoriesResponse?.categories.map((i) => (
+                <option key={i} value={i}>
+                  {i.toUpperCase()}
+                </option>
+              ))}
           </select>
         </div>
       </aside>
@@ -53,32 +101,40 @@ const Search = () => {
           onChange={(e) => setsearch(e.target.value)}
           placeholder="Search By name"
         />
-        <div className="search-product-list">
-          <ProductCard
-            productId="5755"
-            name="Macbook"
-            photo="https://m.media-amazon.com/images/I/61HUaSA6c0L._AC_UY218_.jpg"
-            price={555}
-            stock={555}
-            handler={addToCartHandler}
-          />
-        </div>
+        {productLoading ? (
+          <Skelton length={10} />
+        ) : (
+          <div className="search-product-list">
+            {searchData?.products.map((i) => (
+              <ProductCard
+                productId={i._id}
+                name={i.name}
+                photo={`${server}/${i.photo}`}
+                price={i.price}
+                stock={i.stock}
+                handler={addToCartHandler}
+              />
+            ))}
+          </div>
+        )}
 
-        <article>
-          <button
-            disabled={!prevpage}
-            onClick={() => setpage((prev) => prev - 1)}>
-            prev
-          </button>
-          <span>
-            {page} of {4}
-          </span>
-          <button
-            disabled={!nextpage}
-            onClick={() => setpage((prev) => prev + 1)}>
-            next
-          </button>
-        </article>
+        {searchData && searchData.totalPage > 1 && (
+          <article>
+            <button
+              disabled={!prevpage}
+              onClick={() => setpage((prev) => prev - 1)}>
+              prev
+            </button>
+            <span>
+              {page} of {searchData.totalPage}
+            </span>
+            <button
+              disabled={!nextpage}
+              onClick={() => setpage((prev) => prev + 1)}>
+              next
+            </button>
+          </article>
+        )}
       </main>
     </div>
   );

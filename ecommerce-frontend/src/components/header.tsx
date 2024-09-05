@@ -7,13 +7,25 @@ import {
   FaSignOutAlt,
   FaUser,
 } from "react-icons/fa";
+import { User } from "../types/types";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import toast from "react-hot-toast";
 
-const user = { _id: "", role: "" };
+interface propType {
+  user: User | null;
+}
 
-const Header = () => {
+const Header = ({ user }: propType) => {
   const [isOpen, setisOpen] = useState<boolean>(false);
-  const handleSubmit = () => {
-    setisOpen(false);
+  const logoutHandler = async () => {
+    try {
+      await signOut(auth);
+      toast.success("user is logout successfully");
+      setisOpen(false);
+    } catch (error) {
+      toast.error("error signout fail");
+    }
   };
   return (
     <nav className="header">
@@ -42,7 +54,7 @@ const Header = () => {
               <Link onClick={() => setisOpen(false)} to={"/orders"}>
                 Orders
               </Link>
-              <button onClick={handleSubmit}>
+              <button onClick={logoutHandler}>
                 <FaSignOutAlt />
               </button>
             </div>

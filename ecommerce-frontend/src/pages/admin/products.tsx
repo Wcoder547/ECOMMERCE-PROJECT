@@ -1,9 +1,16 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Column } from "react-table";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import TableHOC from "../../components/admin/TableHOC";
+import { useAllProductsQuery } from "../../redux/api/productApi";
+import { server } from "../../redux/store";
+import toast from "react-hot-toast";
+import { customError } from "../../types/api-types";
+import { userReducerInitialState } from "../../types/reducer-types";
+import { useSelector } from "react-redux";
+import { Skelton } from "../../components/loader";
 
 interface DataType {
   photo: ReactElement;
@@ -60,7 +67,29 @@ const arr: Array<DataType> = [
 ];
 
 const Products = () => {
+  const { user } = useSelector(
+    (state: { userReducer: userReducerInitialState }) => state.userReducer
+  );
+  const { isLoading, isError, error, data } = useAllProductsQuery(user?._id!);
   const [rows, setRows] = useState<DataType[]>(arr);
+
+  if (isError) {
+    const err = error as customError;
+    toast.error(err.data.message);
+  }
+  useEffect(() => {
+    if (data) {
+      setRows(
+        data.products.map((i) => ({
+          photo: <img src={`${server}/${i.photo}`} />,
+          name: i.name,
+          price: i.price,
+          stock: i.stock,
+          action: <Link to={`/admin/product/${i._id}`}>Manage</Link>,
+        }))
+      );
+    }
+  }, [data]);
 
   const Table = TableHOC<DataType>(
     columns,
@@ -73,7 +102,7 @@ const Products = () => {
   return (
     <div className="admin-container">
       <AdminSidebar />
-      <main>{Table}</main>
+      <main>{isLoading ? <Skelton /> : Table}</main>
       <Link to="/admin/product/new" className="create-product-btn">
         <FaPlus />
       </Link>

@@ -2,82 +2,87 @@ import { useState, useEffect } from "react";
 import { VscError } from "react-icons/vsc";
 import CartItem from "../components/cartItem";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { cartReducerInitialState } from "../types/reducer-types";
+import { cartItem } from "../types/types";
+import {
+  addToCart,
+  calculatePrice,
+  discountApplied,
+  removeToCart,
+} from "../redux/reducer/cartReducer";
+import axios from "axios";
+import { server } from "../redux/store";
 
-const cartItems = [
-  {
-    ProductId: "ahsdfjlksdjflk",
-    photo: "https://m.media-amazon.com/images/I/61HUaSA6c0L._AC_UY218_.jpg",
-    name: "Macbook",
-    price: 555,
-    quantity: 4,
-    stock: 10,
-  },
-  {
-    ProductId: "ahsdfjlksdjflk",
-    photo: "https://m.media-amazon.com/images/I/61HUaSA6c0L._AC_UY218_.jpg",
-    name: "Macbook",
-    price: 555,
-    quantity: 4,
-    stock: 10,
-  },
-  {
-    ProductId: "ahsdfjlksdjflk",
-    photo: "https://m.media-amazon.com/images/I/61HUaSA6c0L._AC_UY218_.jpg",
-    name: "Macbook",
-    price: 555,
-    quantity: 4,
-    stock: 10,
-  },
-  {
-    ProductId: "ahsdfjlksdjflk",
-    photo: "https://m.media-amazon.com/images/I/61HUaSA6c0L._AC_UY218_.jpg",
-    name: "Macbook",
-    price: 555,
-    quantity: 4,
-    stock: 10,
-  },
-  {
-    ProductId: "ahsdfjlksdjflk",
-    photo: "https://m.media-amazon.com/images/I/61HUaSA6c0L._AC_UY218_.jpg",
-    name: "Macbook",
-    price: 555,
-    quantity: 4,
-    stock: 10,
-  },
-];
-const subTotoal = 4000;
-const tax = Math.round(subTotoal * 0.18);
-const shippingCharges = 200;
-const discount = 400;
-const total = subTotoal + tax + shippingCharges;
-const coupon = 555;
 const Cart = () => {
+  const { cartItems, total, subtotal, tax, shippingCharges, discount } =
+    useSelector(
+      (state: { cartReducer: cartReducerInitialState }) => state.cartReducer
+    );
   const [couponCode, setcouponCode] = useState<string>("");
   const [isValidCouponCode, setisValidCouponCode] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+  const incrementHandler = (cartItem: cartItem) => {
+    if (cartItem.quantity >= cartItem.stock) return;
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity + 1 }));
+  };
+  const decrementHandler = (cartItem: cartItem) => {
+    if (cartItem.quantity <= 1) return;
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity - 1 }));
+  };
+  const removeHandler = (productId: string) => {
+    dispatch(removeToCart(productId));
+  };
   useEffect(() => {
+    const { token: cancelToken, cancel } = axios.CancelToken.source();
     const timeOutId = setTimeout(() => {
-      if (coupon === 555) setisValidCouponCode(true);
-      else setisValidCouponCode(false);
+      axios
+        .get(`${server}/api/v1/payment/discount?coupon=${couponCode}`, {
+          cancelToken,
+        })
+        .then((res) => {
+          dispatch(discountApplied(res.data.discount));
+          console.log(res.data);
+          setisValidCouponCode(true);
+          dispatch(calculatePrice());
+        })
+        .catch(() => {
+          dispatch(discountApplied(0));
+          setisValidCouponCode(false);
+          dispatch(calculatePrice());
+        });
     }, 1000);
     return () => {
       clearTimeout(timeOutId);
+      cancel();
       setisValidCouponCode(false);
     };
   }, [couponCode]);
+  useEffect(() => {
+    dispatch(calculatePrice());
+  }, [cartItems]);
 
   return (
     <>
       <div className="cart">
         <main>
           {cartItems.length > 0 ? (
-            cartItems.map((i, indx) => <CartItem key={indx} cartItem={i} />)
+            cartItems.map((i, indx) => (
+              <CartItem
+                incrementHandler={incrementHandler}
+                decrementHandler={decrementHandler}
+                removeHandler={removeHandler}
+                key={indx}
+                cartItem={i}
+              />
+            ))
           ) : (
             <h1>No items Found</h1>
           )}
         </main>
         <aside>
-          <p>SubTotal : ${subTotoal}</p>
+          <p>SubTotal : ${subtotal}</p>
           <p>Shipping Charges: ${shippingCharges}</p>
           <p>Tax :${tax}</p>
           <p>

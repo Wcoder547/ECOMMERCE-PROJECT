@@ -1,13 +1,13 @@
-import { nodeCache } from "../app";
-import { TryCatch } from "../middlewares/error.middlware";
-import { Prodcut } from "../models/product.model";
-import { User } from "../models/user.model";
-import { Order } from "../models/order.model";
+import { nodeCache } from "../app.js";
+import { TryCatch } from "../middlewares/error.middlware.js";
+import { Prodcut } from "../models/product.model.js";
+import { User } from "../models/user.model.js";
+import { Order } from "../models/order.model.js";
 import {
   calCulatePercentage,
   getChartData,
   getInventeries,
-} from "../utils/features";
+} from "../utils/features.js";
 
 export const getDashboardStats = TryCatch(async (req, res, next) => {
   let stats;

@@ -3,7 +3,7 @@ import {
   getBarStats,
   getDashboardStats,
   getLineStats,
-} from "../controllers/stats.controller";
+} from "../controllers/stats.controller.js";
 const app = express.Router();
 
 //Stats - /api/v1/dashboard/stats

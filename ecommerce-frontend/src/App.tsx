@@ -1,6 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Loader from "./components/loader";
+import { Toaster } from "react-hot-toast";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { useDispatch, useSelector } from "react-redux";
+import { userExist, userNotExist } from "./redux/reducer/userReducer";
+import { getUser } from "./redux/api/userApi";
+import { userReducerInitialState } from "./types/reducer-types";
+import ProtectedRoute from "./components/protectedRoute";
 
 const Home = lazy(() => import("./pages/home"));
 const Search = lazy(() => import("./pages/search"));
@@ -9,6 +17,8 @@ const Header = lazy(() => import("./components/header"));
 const Shipping = lazy(() => import("./pages/shipping"));
 const Login = lazy(() => import("./pages/login"));
 const Orders = lazy(() => import("./pages/orders"));
+const NotFound = lazy(() => import("./pages/not-found"));
+const CheckOut = lazy(() => import("./pages/checkout"));
 
 //Admin routes imports
 
@@ -31,32 +41,58 @@ const TransactionManagement = lazy(
 );
 
 const App = () => {
+  const { user } = useSelector(
+    (state: { userReducer: userReducerInitialState }) => state.userReducer
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const data = await getUser(user.uid);
+        dispatch(userExist(data.user));
+        console.log("user is logged in");
+      } else {
+        dispatch(userNotExist());
+      }
+    });
+
+    return () => unsubscribe();
+  }, [dispatch]);
+
   return (
     <Router>
       {/* header */}
-      <Header />
+      <Header user={user} />
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route path="/" element=<Home /> />
-          <Route path="/search" element=<Search /> />
-          <Route path="/cart" element=<Cart /> />
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/cart" element={<Cart />} />
           {/* Login routes */}
-          <Route path="/login" element=<Login /> />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute isAuthenticated={user ? false : true}>
+                <Login />
+              </ProtectedRoute>
+            }
+          />
           {/* LogeedIn user Routes */}
-          <Route>
-            <Route path="/shipping" element=<Shipping /> />
-            <Route path="/orders" element=<Orders /> />
+          <Route
+            element={<ProtectedRoute isAuthenticated={user ? true : false} />}>
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/pay" element={<CheckOut />} />
           </Route>
           {/* Admin routes */}
           <Route
-          // element={
-          //   <ProtectedRoute
-          //     isAuthenticated={true}
-          //     adminRoute={true}
-          //     isAdmin={true}
-          //   />
-          // }
-          >
+            element={
+              <ProtectedRoute
+                isAuthenticated={true}
+                adminRoute={true}
+                isAdmin={user?.role === "admin" ? true : false}
+              />
+            }>
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
             <Route path="/admin/customer" element={<Customers />} />
@@ -80,9 +116,10 @@ const App = () => {
               element={<TransactionManagement />}
             />
           </Route>
-          ;
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center" />
     </Router>
   );
 };
