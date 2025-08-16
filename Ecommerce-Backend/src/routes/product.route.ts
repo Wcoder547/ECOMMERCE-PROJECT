@@ -16,7 +16,7 @@ const app = express.Router();
 //New-products - api/v1/product/new
 app.post("/new", singleUpload, newProduct);
 //New-products - api/v1/product/new
-app.post("/all/search", getAllProducts);
+app.get("/all/", getAllProducts);
 
 //Latest-products - api/v1/product/latest
 app.get("/latest", getLatestProduct);

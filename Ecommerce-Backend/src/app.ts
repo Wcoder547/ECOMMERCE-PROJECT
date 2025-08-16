@@ -18,7 +18,12 @@ const port = process.env.PORT || 4000;
 const stripeKey = process.env.STRIPE_KEY || "";
 const app = express();
 app.use(morgan("dev"));
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+}));
 export const stripe = new Stripe(stripeKey);
 export const nodeCache = new NodeCache();
 app.get("/", (req, res) => {

@@ -105,11 +105,12 @@ const Search = () => {
           <Skelton length={10} />
         ) : (
           <div className="search-product-list">
-            {searchData?.products.map((i) => (
+            {searchData?.latestProduct.map((i) => (
               <ProductCard
+              key={i._id}
                 productId={i._id}
                 name={i.name}
-                photo={`${server}/${i.photo}`}
+                photo={`${i.photo}`}
                 price={i.price}
                 stock={i.stock}
                 handler={addToCartHandler}

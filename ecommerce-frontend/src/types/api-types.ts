@@ -16,16 +16,16 @@ export type UserResponse = {
   success: boolean;
   user: User;
 };
-export type productResponse = {
+export type latestProduct = {
   success: boolean;
-  adminProducts: Product[];
+  latestProduct: Product[];
 };
 export type categoriesResponse = {
   success: boolean;
   categories: string[];
 };
 
-export type searchProductResponse = productResponse & {
+export type searchProductResponse = latestProduct & {
   totalPage: number;
 };
 export type searchProductRequest = {

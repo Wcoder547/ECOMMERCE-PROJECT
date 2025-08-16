@@ -30,7 +30,7 @@ export const getLatestProduct = TryCatch(async (req, res, next) => {
 export const getAllProducts = TryCatch(
   async (req: Request<{}, {}, {}, searchRequestQuery>, res, next) => {
     const { search, sort, price, category } = req.query;
-    //  console.log(search,sort,price,category)
+      console.log(search,sort,price,category)
     const page = Number(req.query.page) || 1;
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
 
