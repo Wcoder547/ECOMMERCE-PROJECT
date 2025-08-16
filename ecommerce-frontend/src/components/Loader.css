@@ -1,0 +1,34 @@
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    /* centers vertically */
+}
+
+.colorful-spinner {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 6px solid #eee;
+    /* base color */
+    border-top: 6px solid #3b82f6;
+    /* blue */
+    border-right: 6px solid #ec4899;
+    /* pink */
+    border-bottom: 6px solid #facc15;
+    /* yellow */
+    border-left: 6px solid #10b981;
+    /* green */
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

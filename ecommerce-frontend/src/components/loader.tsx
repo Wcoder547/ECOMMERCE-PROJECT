@@ -1,7 +1,12 @@
-const Loader = () => {
-  return <div>Loading....</div>;
-};
+import "./Loader.css"; // make sure to create this CSS file
 
+const Loader = () => {
+  return (
+    <div className="loader-container">
+      <div className="colorful-spinner"></div>
+    </div>
+  );
+};
 export default Loader;
 
 interface skeltonProps {

@@ -25,6 +25,7 @@ const Header = ({ user }: propType) => {
       setisOpen(false);
     } catch (error) {
       toast.error("error signout fail");
+      console.error(error);
     }
   };
   return (
