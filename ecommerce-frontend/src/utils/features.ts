@@ -20,7 +20,7 @@ export const responseToast = (
   url: string
 ) => {
   if ("data" in res) {
-    toast.success(res.data?.message!);
+    toast.success(res.data?.message || "Operation successful!");
     if (navigate) navigate(url);
   } else {
     const err = res.error as FetchBaseQueryError;

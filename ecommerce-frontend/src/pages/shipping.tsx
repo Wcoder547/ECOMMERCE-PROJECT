@@ -14,13 +14,18 @@ const Shipping = () => {
   const { cartItems } = useSelector(
     (state: { cartReducer: cartReducerInitialState }) => state.cartReducer
   );
+  // Calculate total from cartItems
+  const total = cartItems.reduce(
+    (acc, item) => acc + (item.price || 0) * (item.quantity || 1),
+    0
+  );
+
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(saveShoppingInfo(shippingInfo));
     try {
       const { data } = await axios.post(
-        `
-        ${server}/api/v1/payment/create`,
+        `${server}/api/v1/payment/create`,
         {
           amount: total,
         },
@@ -43,7 +48,7 @@ const Shipping = () => {
     address: "",
     city: "",
     province: "",
-    countery: "",
+    country: "",
     pincode: "",
   });
   const chnageHandler = (
@@ -53,7 +58,7 @@ const Shipping = () => {
   };
   useEffect(() => {
     if (cartItems.length <= 0) return navigate("/cart");
-  }, [cartItems]);
+  }, [cartItems,navigate]);
 
   return (
     <div className="shipping">
@@ -89,9 +94,9 @@ const Shipping = () => {
         />
 
         <select
-          name="countery"
+          name="country"
           required
-          value={shippingInfo.countery}
+          value={shippingInfo.country}
           onChange={chnageHandler}>
           <option value="">Please select Your Countery</option>
           <option value="pakistan">Pakistan</option>

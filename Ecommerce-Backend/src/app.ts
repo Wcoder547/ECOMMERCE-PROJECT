@@ -24,12 +24,13 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
+app.use(express.json());
 export const stripe = new Stripe(stripeKey);
 export const nodeCache = new NodeCache();
 app.get("/", (req, res) => {
   res.send("API working with/api/v1");
 });
-app.use(express.json());
+
 app.use("/uploads", express.static("uploads"));
 
 connectDb()

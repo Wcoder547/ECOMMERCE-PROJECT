@@ -50,7 +50,7 @@ const Orders = () => {
     (state: { userReducer: userReducerInitialState }) => state.userReducer
   );
 
-  const { data, isLoading, isError, error } = useMyordersQuery(user?._id!);
+  const { data, isLoading, isError, error } = useMyordersQuery(user?._id || "");
   const [rows, setRows] = useState<DataType[]>([]);
   if (isError) {
     const err = error as customError;
@@ -64,7 +64,7 @@ const Orders = () => {
           _id: i._id,
           amount: i.total,
           discount: i.discount,
-          quantity: i.orderItems.length,
+          quantity: i.orderitems.length,
           status: (
             <span
               className={

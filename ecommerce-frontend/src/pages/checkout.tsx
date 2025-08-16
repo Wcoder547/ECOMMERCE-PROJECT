@@ -15,6 +15,7 @@ import { responseToast } from "../utils/features";
 import { NewOrderRequest } from "../types/api-types";
 import { RootState } from "../redux/store";
 
+// ✅ Load Stripe with env key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
 
 const CheckOutForm = () => {
@@ -24,53 +25,61 @@ const CheckOutForm = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootState) => state.userReducer);
+  const { shippingInfo, cartItems, subtotal, tax, discount, shippingCharges, total } =
+    useSelector((state: RootState) => state.cartReducer);
 
-  const {
-    shippingInfo,
-    cartItems,
-    subtotal,
-    tax,
-    discount,
-    shippingCharges,
-    total,
-  } = useSelector((state: RootState) => state.cartReducer);
-  const [isProcessing, setisProcessing] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [newOrder] = useNewOrderMutation();
+
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!stripe || !elements) return;
-    setisProcessing(true);
+
+    setIsProcessing(true);
 
     const orderData: NewOrderRequest = {
       shippingInfo,
-      orderItems: cartItems,
+      orderitems: cartItems, // ✅ match backend field
       subtotal,
       tax,
       discount,
       shippingCharges,
       total,
-      user: user?._id!,
+      user: user?._id || "",
     };
+
+    
 
     const { paymentIntent, error } = await stripe.confirmPayment({
       elements,
       confirmParams: { return_url: window.location.origin },
       redirect: "if_required",
     });
-    // setTimeout(() => {
-    //   setisProcessing(false);
-    // }, 2000);
+
     if (error) {
-      setisProcessing(false);
-      return toast.error(error.message || "something went wrong!!");
+      setIsProcessing(false);
+      return toast.error(error.message || "Payment failed");
     }
-    if (paymentIntent.status === "succeeded") {
-      const res = await newOrder(orderData);
-      dispatch(resetCart());
-      responseToast(res, navigate, "/orders");
-      console.log("placing order");
+
+    if (paymentIntent?.status === "succeeded") {
+      toast.success("Payment successful!");
+      try {
+        const res = await newOrder(orderData);
+
+        if ("data" in res) {
+      
+          dispatch(resetCart());
+          responseToast(res, navigate, "/orders");
+        } else {
+          responseToast(res, null, "");
+        }
+      } catch (err) {
+        toast.error("❌ Something went wrong while placing order");
+        console.error(err);
+      }
     }
-    setisProcessing(false);
+
+    setIsProcessing(false);
   };
 
   return (
@@ -78,7 +87,7 @@ const CheckOutForm = () => {
       <form onSubmit={submitHandler}>
         <PaymentElement />
         <button type="submit" disabled={isProcessing}>
-          {isProcessing ? "processing.." : "pay"}
+          {isProcessing ? "Processing..." : "Pay"}
         </button>
       </form>
     </div>
@@ -89,9 +98,10 @@ const CheckOut = () => {
   const location = useLocation();
   const clientSecret: string | undefined = location.state;
 
-  if (!clientSecret) return <Navigate to={"/shipping"} />;
+  if (!clientSecret) return <Navigate to="/shipping" />;
+
   return (
-    <Elements options={{ clientSecret: "" }} stripe={stripePromise}>
+    <Elements key={clientSecret} options={{ clientSecret }} stripe={stripePromise}>
       <CheckOutForm />
     </Elements>
   );

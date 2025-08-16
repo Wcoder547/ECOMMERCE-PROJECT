@@ -6,21 +6,28 @@ import { isValidObjectId } from "mongoose";
 
 export const createPaymentIntent = TryCatch(async (req, res, next) => {
   const { amount } = req.body;
-  if (!amount) {
-    return next(
-      new ErrorHandler("Please Enter both Coupon and amount fields", 400)
-    );
-  }
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: Number(amount) * 100,
-    currency: "pkr",
-  });
 
-  return res.status(201).json({
-    success: true,
-    clientSecret: paymentIntent.client_secret,
-  });
+  if (!amount) {
+    return res.status(400).json({ success: false, message: "Please enter amount" });
+  }
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Number(amount) * 100,
+      currency: "usd",
+    });
+
+    return res.status(201).json({
+      success: true,
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error: any) {
+    console.error("Stripe error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
 });
+
+
 export const newCoupon = TryCatch(async (req, res, next) => {
   const { coupon, amount } = req.body;
   if (!coupon || !amount) {

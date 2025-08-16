@@ -19,21 +19,22 @@ export const newOrder = TryCatch(
       total,
       orderitems,
     } = req.body;
-    if (
-      !shippingInfo ||
-      !user ||
-      !subtotal ||
-      !tax ||
-      !shippingCharges ||
-      !discount ||
-      !total ||
-      !orderitems
-    ) {
-      return res.status(400).json({
-        success: true,
-        message: "please input all fields",
-      });
-    }
+   if (
+  !shippingInfo ||
+  !user ||
+  subtotal === undefined ||
+  tax === undefined ||
+  shippingCharges === undefined ||
+  discount === undefined ||
+  total === undefined ||
+  !orderitems
+) {
+  return res.status(400).json({
+    success: false,
+    message: "please input all fields",
+  });
+}
+
 
     const order = await Order.create({
       shippingInfo,

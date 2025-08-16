@@ -57,7 +57,7 @@ export type oneProductResponse = {
 
 export type NewOrderRequest = {
   shippingInfo: shippingInfo;
-  orderItems: cartItem[];
+  orderitems: cartItem[];
   subtotal: number;
   tax: number;
   shippingCharges: number;

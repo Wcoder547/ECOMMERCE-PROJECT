@@ -9,7 +9,7 @@ import {
 const app = express.Router();
 
 //route - /api/v1/payment/create
-app.get("/create", createPaymentIntent);
+app.post("/create", createPaymentIntent);
 //route - /api/v1/payment/coupon/new
 app.post("/coupon/new", newCoupon);
 //route - /api/v1/payment/coupon/discount
