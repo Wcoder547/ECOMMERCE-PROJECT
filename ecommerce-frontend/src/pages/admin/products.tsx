@@ -80,7 +80,7 @@ const Products = () => {
   useEffect(() => {
     if (data) {
       setRows(
-        data?.adminProducts.map((i) => ({
+        data?.products.map((i) => ({
           photo: <img src={`${server}/${i.photo}`} />,
           name: i.name,
           price: i.price,

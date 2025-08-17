@@ -1,4 +1,4 @@
-import { cartItem, Order, Product, shippingInfo, User } from "./types";
+import { cartItem, Order,product,products, shippingInfo, User } from "./types";
 
 export type messageResponse = {
   success: boolean;
@@ -18,7 +18,7 @@ export type UserResponse = {
 };
 export type latestProduct = {
   success: boolean;
-  latestProduct: Product[];
+  latestProduct: product[];
 };
 export type categoriesResponse = {
   success: boolean;
@@ -50,9 +50,13 @@ export type deleteProductRequest = {
   productId: string;
 };
 
+export type productResponse = {
+  success: boolean;
+  products: products[];
+};
 export type oneProductResponse = {
   success: boolean;
-  product: Product;
+  product: product;
 };
 
 export type NewOrderRequest = {

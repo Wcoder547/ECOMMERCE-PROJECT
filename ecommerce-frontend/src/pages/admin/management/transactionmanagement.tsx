@@ -5,7 +5,6 @@ import {
   Link,
   Navigate,
   useNavigate,
-  useNavigation,
   useParams,
 } from "react-router-dom";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
@@ -17,7 +16,7 @@ import {
 import { server } from "../../../redux/store";
 import { customError } from "../../../types/api-types";
 import { userReducerInitialState } from "../../../types/reducer-types";
-import { Order, orderItems } from "../../../types/types";
+import { Order, orderitems } from "../../../types/types";
 import { Skelton } from "../../../components/loader";
 import { responseToast } from "../../../utils/features";
 
@@ -29,7 +28,7 @@ const defaultData: Order = {
     address: "",
     city: "",
     province: "",
-    countery: "",
+    country: "",
     pincode: "",
   },
   status: "",
@@ -38,7 +37,7 @@ const defaultData: Order = {
   shippingCharges: 0,
   tax: 0,
   total: 0,
-  orderItems: [],
+  orderitems: [],
   user: {
     name: "",
     _id: "",
@@ -55,8 +54,8 @@ const TransactionManagement = () => {
 
   const { data, isLoading, isError, error } = useOrderDetailsQuery(params.id!);
   const {
-    shippingInfo: { address, city, province, countery, pincode },
-    orderItems,
+    shippingInfo: { address, city, province, country, pincode },
+    orderitems,
     user: { name },
     status,
     tax,
@@ -64,7 +63,7 @@ const TransactionManagement = () => {
     total,
     discount,
     shippingCharges,
-  } = data?.order || defaultData;
+  } = data?.order  || defaultData;
 
   if (isError) {
     const err = error as customError;
@@ -75,16 +74,16 @@ const TransactionManagement = () => {
 
   const updateHandler = async () => {
     const res = await updateOrder({
-      userId: user?._id!,
-      orderId: data?.order._id!,
+      userId: user?._id || "",
+      orderId: data?.order._id || "",
     });
     responseToast(res, navigate, "/admin/transaction");
   };
 
   const deleteHandler = async () => {
     const res = await deleteOrder({
-      userId: user?._id!,
-      orderId: data?.order._id!,
+      userId: user?._id || "",
+      orderId: data?.order._id ?? "",
     });
     responseToast(res, navigate, "/admin/transaction");
   };
@@ -104,7 +103,7 @@ const TransactionManagement = () => {
               }}>
               <h2>Order Items</h2>
 
-              {orderItems.map((i) => (
+              {orderitems.map((i) => (
                 <ProductCard
                   key={i._id}
                   name={i.name}
@@ -126,7 +125,7 @@ const TransactionManagement = () => {
               <p>Name: {name}</p>
               <p>
                 Address:{" "}
-                {`${address}, ${city}, ${province}, ${countery} ${pincode}`}
+                {`${address}, ${city}, ${province}, ${country} ${pincode}`}
               </p>
               <h5>Amount Info</h5>
               <p>Subtotal: {subtotal}</p>
@@ -166,7 +165,7 @@ const ProductCard = ({
   price,
   quantity,
   productId,
-}: orderItems) => (
+}: orderitems) => (
   <div className="transaction-product-card">
     <img src={photo} alt={name} />
     <Link to={`/product/${productId}`}>{name}</Link>

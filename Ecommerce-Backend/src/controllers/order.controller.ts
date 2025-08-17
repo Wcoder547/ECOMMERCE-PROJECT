@@ -102,19 +102,19 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
   if (!isValidObjectId(id)) {
     return next(new ErrorHandler("Invalid ID", 400));
   }
-  let singleOrder;
+  let order;
   const key = `order-${id}`;
   if (nodeCache.has(key))
-    singleOrder = JSON.parse(nodeCache.get(key) as string);
+    order = JSON.parse(nodeCache.get(key) as string);
   else {
-    singleOrder = await Order.findById(id).populate("user", "name");
-    if (!singleOrder) return next(new ErrorHandler("order not found!!", 404));
-    nodeCache.set(key, JSON.stringify(singleOrder));
+    order = await Order.findById(id).populate("user", "name");
+    if (!order) return next(new ErrorHandler("order not found!!", 404));
+    nodeCache.set(key, JSON.stringify(order));
   }
 
   return res.status(201).json({
     success: true,
-    singleOrder,
+    order,
   });
 });
 

@@ -7,7 +7,7 @@ export type User = {
   dob: string;
   _id: string;
 };
-export type Product = {
+export type  product = {
   name: string;
   price: number;
   stock: number;
@@ -15,7 +15,14 @@ export type Product = {
   photo: string;
   _id: string;
 };
-
+export type products = {
+  name: string;
+  price: number;
+  stock: number;
+  category: string;
+  photo: string;
+  _id: string;
+}
 export type shippingInfo = {
   address: string;
   city: string;

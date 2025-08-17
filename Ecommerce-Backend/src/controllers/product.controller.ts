@@ -82,17 +82,17 @@ export const getCategories = TryCatch(async (req: Request, res, next) => {
   });
 });
 export const getAdminProducts = TryCatch(async (req: Request, res, next) => {
-  let adminProducts;
+  let products;
   if (nodeCache.has("admin-products"))
-    adminProducts = JSON.parse(nodeCache.get("admin-products") as string);
+    products = JSON.parse(nodeCache.get("admin-products") as string);
   else {
-    adminProducts = await Product.find({});
-    nodeCache.set("admin-products", JSON.stringify(adminProducts));
+    products = await Product.find({});
+    nodeCache.set("admin-products", JSON.stringify(products));
   }
 
   return res.status(200).json({
     success: true,
-    adminProducts,
+    products,
   });
 });
 export const getSingleProduct = TryCatch(async (req: Request, res, next) => {
@@ -100,17 +100,17 @@ export const getSingleProduct = TryCatch(async (req: Request, res, next) => {
   if (!isValidObjectId(id)) {
     return next(new ErrorHandler("No id found!!", 400));
   }
-  let singleProduct;
+  let product;
   if (nodeCache.has(`product-${id}`))
-    singleProduct = JSON.parse(nodeCache.get(`product-${id}`) as string);
+    product = JSON.parse(nodeCache.get(`product-${id}`) as string);
   else {
-    singleProduct = await Product.findById(id);
-    nodeCache.set(`product-${id}`, JSON.stringify(singleProduct));
+    product = await Product.findById(id);
+    nodeCache.set(`product-${id}`, JSON.stringify(product));
   }
 
   return res.status(200).json({
     success: true,
-    singleProduct,
+    product,
   });
 });
 //Revalidate on new,update,delete product & new order
