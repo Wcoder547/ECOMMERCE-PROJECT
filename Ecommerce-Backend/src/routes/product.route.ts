@@ -1,5 +1,5 @@
 import express from "express";
-import { singleUpload } from "../middlewares/multer.middleware.js";
+import { multipleUpload, singleUpload } from "../middlewares/multer.middleware.js";
 import {
   delteProduct,
   getAdminProducts,
@@ -14,7 +14,7 @@ import { AdminOnly } from "../middlewares/auth.middleware.js";
 const app = express.Router();
 
 //New-products - api/v1/product/new
-app.post("/new", singleUpload, newProduct);
+app.post("/new", multipleUpload, newProduct);
 //New-products - api/v1/product/new
 app.get("/all/", getAllProducts);
 

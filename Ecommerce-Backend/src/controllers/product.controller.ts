@@ -10,7 +10,7 @@ import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { isValidObjectId } from "mongoose";
 import { nodeCache } from "../app.js";
-import { invalidateCache } from "../utils/features.js";
+import { invalidateCache, uploadToCloudinary } from "../utils/features.js";
 
 export const getLatestProduct = TryCatch(async (req, res, next) => {
   let products;
@@ -118,23 +118,35 @@ export const newProduct = TryCatch(
   async (req: Request<{}, {}, newProductRequestBody>, res, next) => {
     const { name, category, price, stock } = req.body;
     // console.log(name, category, price, stock);
-    const photo = req.file;
-    if (!photo) return next(new ErrorHandler("Please Add photo", 400));
+    const photos = req.files as Express.Multer.File[] | undefined;
+    if (!photos) return next(new ErrorHandler("Please Add photos", 400));
 
+    if(photos.length < 1)
+    {
+      return next(new ErrorHandler("Please Add atleast one photo", 400));
+    }
+    if(photos.length > 5)
+    {
+      return next(new ErrorHandler("You can only upload five photos", 400));
+    }
     if (!name || !category || !price || !stock) {
-      rm(photo.path, () => {
-        console.log("photo deleted");
+      photos.forEach((photo) => {
+        rm(photo.path, () => {
+          console.log("photo deleted");
+        });
       });
       return next(new ErrorHandler("All fields are required", 400));
     }
+const photosURL = await uploadToCloudinary(photos);
+console.log(photosURL);
 
     await Product.create({
       name,
       category: category.toLowerCase().trim(),
       price,
       stock,
-      photo: photo?.path,
-    });
+      photos: photosURL,
+    }); 
     invalidateCache({ product: true, admin: true });
     return res.status(201).json({
       success: true,

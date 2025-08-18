@@ -4,8 +4,32 @@ import { invalidateCacheProps, orderitemsType } from "../types/types.js";
 import { nodeCache } from "../app.js";
 import { Product } from "../models/product.model.js";
 import { DB_NAME } from "./constant.js";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 
-mongoose.set("strictQuery", true); //The warning is just a heads-up about the upcoming change in Mongoose 7. By setting strictQuery explicitly now, you can control whether you want to use the strict or non-strict query mode, avoiding any surprises when you eventually upgrade to Mongoose 7
+
+
+const getBase64 = (file: Express.Multer.File) => `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+export const uploadToCloudinary = async (files: Express.Multer.File[]) => {
+  const promises = files.map( async (file) => {
+    return new Promise<UploadApiResponse>((resolve, reject) => {
+      cloudinary.uploader.upload(getBase64(file), {
+        folder: "PRODUCTS",
+        resource_type: "auto",
+      }, (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(result!);
+      });
+    });
+  });
+  const result = await Promise.all(promises);
+  return result.map((res) => ({
+    public_id: res.public_id,
+     url: res.secure_url,
+  })) ;
+};
 
 const connectDb = async () => {
   try {
@@ -21,6 +45,8 @@ const connectDb = async () => {
     process.exit(1);
   }
 };
+
+
 
 export default connectDb;
 

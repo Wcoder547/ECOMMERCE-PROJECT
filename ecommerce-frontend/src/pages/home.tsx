@@ -9,6 +9,8 @@ import { addToCart } from "../redux/reducer/cartReducer";
 
 const Home = () => {
   const { data, isLoading, error } = useLatestProductsQuery("");
+  console.log(data);
+
   const dispatch = useDispatch();
   const addToCartHandler = (cartItem: cartItem) => {
     if (cartItem.stock < 1) return toast.error("out of stock");
@@ -37,7 +39,7 @@ const Home = () => {
                 key={i._id}
                 productId={i._id}
                 name={i.name}
-                photo={i.photo}
+                photo={i.photos?.[0]?.url}
                 price={i.price}
                 stock={i.stock}
                 handler={addToCartHandler}

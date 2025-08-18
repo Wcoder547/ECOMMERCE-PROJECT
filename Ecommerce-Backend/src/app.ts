@@ -10,6 +10,8 @@ import { config } from "dotenv";
 import morgan from "morgan";
 import Stripe from "stripe";
 import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
+
 
 config({
   path: "./.env",
@@ -29,6 +31,13 @@ export const stripe = new Stripe(stripeKey);
 export const nodeCache = new NodeCache();
 app.get("/", (req, res) => {
   res.send("API working with/api/v1");
+});
+
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 app.use("/uploads", express.static("uploads"));
