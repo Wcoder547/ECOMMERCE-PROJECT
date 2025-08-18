@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { LineChart } from "../../../components/admin/Charts";
 import { Skeleton } from "../../../components/loader";
-import { useLineQuery } from "../../../redux/api/dashboardAPI";
+import { useLineQuery } from "../../../redux/api/dashboardApi";
 import { RootState } from "../../../redux/store";
-import { CustomError } from "../../../types/api-types";
+import { customError } from "../../../types/api-types";
 import { getLastMonths } from "../../../utils/features";
 
 const { last12Months: months } = getLastMonths();
@@ -13,7 +13,7 @@ const { last12Months: months } = getLastMonths();
 const Linecharts = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
 
-  const { isLoading, data, error, isError } = useLineQuery(user?._id!);
+  const { isLoading, data, error, isError } = useLineQuery(user?._id || "" );
 
   const products = data?.charts.product|| [];
   const users = data?.charts.users || [];
@@ -21,7 +21,7 @@ const Linecharts = () => {
   const discount = data?.charts.discount || [];
 
   if (isError) {
-    const err = error as CustomError;
+    const err = error as customError;
     toast.error(err.data.message);  
   }
 
