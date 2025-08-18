@@ -9,17 +9,18 @@ const Loader = () => {
 };
 export default Loader;
 
-interface skeltonProps {
+interface skeletonProps {
   width?: string;
   length?: number;
 }
-export const Skelton = ({ width = "unset", length = 3 }: skeltonProps) => {
-  const skeletions = Array.from({ length }, (_, idx) => (
-    <div key={idx} className="skelton-shape"></div>
+
+export const Skeleton = ({ width = "unset", length = 3 }: skeletonProps) => {
+  const skeletons = Array.from({ length }, (_, idx) => (
+    <div key={idx} className="skeleton-shape"></div>
   ));
   return (
-    <div className="skelton-loader" style={{ width }}>
-      {skeletions}
+    <div className="skeleton-loader" style={{ width }}>
+      {skeletons}
     </div>
   );
 };

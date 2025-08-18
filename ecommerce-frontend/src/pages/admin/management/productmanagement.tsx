@@ -10,7 +10,7 @@ import {
 } from "../../../redux/api/productApi";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { server } from "../../../redux/store";
-import { Skelton } from "../../../components/loader";
+import { Skeleton } from "../../../components/loader";
 import { responseToast } from "../../../utils/features";
 
 const Productmanagement = () => {
@@ -97,7 +97,7 @@ const Productmanagement = () => {
       <AdminSidebar />
       <main className="product-management">
         {isLoading ? (
-          <Skelton length={20} />
+          <Skeleton length={20} />
         ) : (
           <>
             <section>

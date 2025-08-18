@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { userReducerInitialState } from "../../types/reducer-types";
 import { customError } from "../../types/api-types";
 import toast from "react-hot-toast";
-import { Skelton } from "../../components/loader";
+import { Skeleton } from "../../components/loader";
 import { useAllordersQuery } from "../../redux/api/orderApi";
 
 interface DataType {
@@ -95,7 +95,7 @@ const Transaction = () => {
   return (
     <div className="admin-container">
       <AdminSidebar />
-      <main>{isLoading ? <Skelton /> : Table}</main>
+      <main>{isLoading ? <Skeleton /> : Table}</main>
     </div>
   );
 };

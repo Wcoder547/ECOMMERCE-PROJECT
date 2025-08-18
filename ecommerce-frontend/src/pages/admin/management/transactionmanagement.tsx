@@ -17,7 +17,7 @@ import { server } from "../../../redux/store";
 import { customError } from "../../../types/api-types";
 import { userReducerInitialState } from "../../../types/reducer-types";
 import { Order, orderitems } from "../../../types/types";
-import { Skelton } from "../../../components/loader";
+import { Skeleton } from "../../../components/loader";
 import { responseToast } from "../../../utils/features";
 
 // import { OrderItem } from "../../../models/types";
@@ -94,7 +94,7 @@ const TransactionManagement = () => {
       <AdminSidebar />
       <main className="product-management">
         {isLoading ? (
-          <Skelton length={20} />
+          <Skeleton length={20} />
         ) : (
           <>
             <section

@@ -50,10 +50,10 @@
         backface-visibility: hidden;
         filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.521));
         &:first-of-type {
-          background-image: url("../assets/images/heads.png");
+          background-image: url("../assets/images/heads.jpg");
         }
         &:last-of-type {
-          background-image: url("../assets/images/tails.png");
+          background-image: url("../assets/images/tails.jpg");
           transform: rotateY(-180deg);
         }
       }

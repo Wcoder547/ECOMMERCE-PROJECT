@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { customError } from "../../types/api-types";
 import { userReducerInitialState } from "../../types/reducer-types";
 import { useSelector } from "react-redux";
-import { Skelton } from "../../components/loader";
+import { Skeleton } from "../../components/loader";
 
 interface DataType {
   photo: ReactElement;
@@ -102,7 +102,7 @@ const Products = () => {
   return (
     <div className="admin-container">
       <AdminSidebar />
-      <main>{isLoading ? <Skelton /> : Table}</main>
+      <main>{isLoading ? <Skeleton /> : Table}</main>
       <Link to="/admin/product/new" className="create-product-btn">
         <FaPlus />
       </Link>

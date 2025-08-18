@@ -7,7 +7,7 @@ import {
 import { customError } from "../types/api-types";
 import toast from "react-hot-toast";
 import { server } from "../redux/store";
-import { Skelton } from "../components/loader";
+import { Skeleton } from "../components/loader";
 import { cartItem } from "../types/types";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/reducer/cartReducer";
@@ -102,7 +102,7 @@ const Search = () => {
           placeholder="Search By name"
         />
         {productLoading ? (
-          <Skelton length={10} />
+          <Skeleton length={10} />
         ) : (
           <div className="search-product-list">
             {searchData?.latestProduct.map((i) => (

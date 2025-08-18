@@ -109,7 +109,7 @@ export const calCulatePercentage = (thisMonth: number, lastMonth: number) => {
   return percent.toFixed(0);
 };
 
-export const getInventeries = async ({
+export const getInventories = async ({
   categories,
   productsCount,
 }: {

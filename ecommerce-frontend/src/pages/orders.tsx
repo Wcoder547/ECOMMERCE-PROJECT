@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useMyordersQuery } from "../redux/api/orderApi";
 import { customError } from "../types/api-types";
 import toast from "react-hot-toast";
-import { Skelton } from "../components/loader";
+import { Skeleton } from "../components/loader";
 
 type DataType = {
   _id: string;
@@ -92,7 +92,7 @@ const Orders = () => {
   return (
     <div className="container">
       <h1>My Orders</h1>
-      {isLoading ? <Skelton /> : Table}
+      {isLoading ? <Skeleton /> : Table}
     </div>
   );
 };

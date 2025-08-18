@@ -3,16 +3,17 @@ import {
   getBarStats,
   getDashboardStats,
   getLineStats,
+  getPieStats
 } from "../controllers/stats.controller.js";
 const app = express.Router();
 
 //Stats - /api/v1/dashboard/stats
-app.post("/stats", getDashboardStats);
+app.get("/stats", getDashboardStats);
 //Stats - /api/v1/dashboard/pie
-app.post("/pie", getLineStats);
+app.get("/pie", getPieStats);
 //Stats - /api/v1/dashboard/bar
-app.post("/bar", getBarStats);
+app.get("/bar", getBarStats);
 //Stats - /api/v1/dashboard/line
-app.post("/line", getLineStats);
+app.get("/line", getLineStats);
 
 export default app;

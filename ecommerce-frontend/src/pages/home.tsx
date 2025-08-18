@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import ProductCard from "../components/productCard";
 import { useLatestProductsQuery } from "../redux/api/productApi";
 import toast from "react-hot-toast";
-import { Skelton } from "../components/loader";
+import { Skeleton } from "../components/loader";
 import { cartItem } from "../types/types";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/reducer/cartReducer";
@@ -30,7 +30,7 @@ const Home = () => {
 
         <main>
           {isLoading ? (
-            <Skelton width="80vw" />
+            <Skeleton width="80vw" />
           ) : (
             data?.products.map((i) => (
               <ProductCard

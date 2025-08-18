@@ -29,7 +29,7 @@ const Transaction = lazy(() => import("./pages/admin/Transaction"));
 const Barcharts = lazy(() => import("./pages/admin/charts/barcharts"));
 const Piecharts = lazy(() => import("./pages/admin/charts/piecharts"));
 const Linecharts = lazy(() => import("./pages/admin/charts/linecharts"));
-const Coupon = lazy(() => import("./pages/admin/apps/coupon"));
+const Coupon = lazy(() => import("./pages/admin/apps/Coupon"));
 const Stopwatch = lazy(() => import("./pages/admin/apps/stopwatch"));
 const Toss = lazy(() => import("./pages/admin/apps/toss"));
 const NewProduct = lazy(() => import("./pages/admin/management/newproduct"));
