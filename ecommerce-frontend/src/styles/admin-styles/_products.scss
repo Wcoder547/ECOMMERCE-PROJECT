@@ -31,7 +31,10 @@
   top: -1.2rem;
   right: -1.2rem;
 }
-
+.product-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .product-management {
   @include flex(row, center, unset);
   padding: 4rem;

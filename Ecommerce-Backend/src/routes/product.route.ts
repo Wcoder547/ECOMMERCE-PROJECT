@@ -1,5 +1,5 @@
 import express from "express";
-import { multipleUpload, singleUpload } from "../middlewares/multer.middleware.js";
+import { multipleUpload } from "../middlewares/multer.middleware.js";
 import {
   delteProduct,
   getAdminProducts,
@@ -30,7 +30,7 @@ app.get("/admin-products", getAdminProducts);
 app
   .route("/:id")
   .get(getSingleProduct)
-  .put(AdminOnly, singleUpload, updateProduct)
+  .put(AdminOnly, multipleUpload, updateProduct)
   .delete(AdminOnly, delteProduct);
 
 export default app;

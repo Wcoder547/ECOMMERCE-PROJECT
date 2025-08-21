@@ -43,7 +43,6 @@ const Cart = () => {
         })
         .then((res) => {
           dispatch(discountApplied(res.data.discount));
-          console.log(res.data);
           setisValidCouponCode(true);
           dispatch(calculatePrice());
         })

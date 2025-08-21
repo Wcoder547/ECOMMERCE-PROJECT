@@ -13,10 +13,7 @@ const getBase64 = (file: Express.Multer.File) => `data:${file.mimetype};base64,$
 export const uploadToCloudinary = async (files: Express.Multer.File[]) => {
   const promises = files.map( async (file) => {
     return new Promise<UploadApiResponse>((resolve, reject) => {
-      cloudinary.uploader.upload(getBase64(file), {
-        folder: "PRODUCTS",
-        resource_type: "auto",
-      }, (error, result) => {
+      cloudinary.uploader.upload(getBase64(file), (error, result) => {
         if (error) {
           return reject(error);
         }
@@ -31,6 +28,21 @@ export const uploadToCloudinary = async (files: Express.Multer.File[]) => {
   })) ;
 };
 
+export const deleteFromCloudinary = async (publicIds: string[]) => {
+  const promises = publicIds.map((publicId) => {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(result);
+      });
+    });
+  });
+  return Promise.all(promises);
+};
+
+//connect-the db
 const connectDb = async () => {
   try {
     const connectionInstance = await mongoose.connect(
@@ -45,9 +57,6 @@ const connectDb = async () => {
     process.exit(1);
   }
 };
-
-
-
 export default connectDb;
 
 export const invalidateCache = ({

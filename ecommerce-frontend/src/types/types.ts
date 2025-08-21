@@ -12,7 +12,10 @@ export type  product = {
   price: number;
   stock: number;
   category: string;
-  photo: string;
+  photos:{
+    public_id: string;
+    url: string;
+  }[];  
   _id: string;
 };
 export type products = {

@@ -6,7 +6,6 @@ import {
 } from "../redux/api/productApi";
 import { customError } from "../types/api-types";
 import toast from "react-hot-toast";
-import { server } from "../redux/store";
 import { Skeleton } from "../components/loader";
 import { cartItem } from "../types/types";
 import { useDispatch } from "react-redux";
@@ -110,7 +109,7 @@ const Search = () => {
               key={i._id}
                 productId={i._id}
                 name={i.name}
-                photo={`${i.photo}`}
+                photo={`${i.photos ? i.photos[0].url : ""}`}
                 price={i.price}
                 stock={i.stock}
                 handler={addToCartHandler}

@@ -10,7 +10,11 @@ import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { isValidObjectId } from "mongoose";
 import { nodeCache } from "../app.js";
-import { invalidateCache, uploadToCloudinary } from "../utils/features.js";
+import {
+  deleteFromCloudinary,
+  invalidateCache,
+  uploadToCloudinary,
+} from "../utils/features.js";
 
 export const getLatestProduct = TryCatch(async (req, res, next) => {
   let products;
@@ -30,7 +34,7 @@ export const getLatestProduct = TryCatch(async (req, res, next) => {
 export const getAllProducts = TryCatch(
   async (req: Request<{}, {}, {}, searchRequestQuery>, res, next) => {
     const { search, sort, price, category } = req.query;
-      console.log(search,sort,price,category)
+    console.log(search, sort, price, category);
     const page = Number(req.query.page) || 1;
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
 
@@ -121,12 +125,10 @@ export const newProduct = TryCatch(
     const photos = req.files as Express.Multer.File[] | undefined;
     if (!photos) return next(new ErrorHandler("Please Add photos", 400));
 
-    if(photos.length < 1)
-    {
+    if (photos.length < 1) {
       return next(new ErrorHandler("Please Add atleast one photo", 400));
     }
-    if(photos.length > 5)
-    {
+    if (photos.length > 5) {
       return next(new ErrorHandler("You can only upload five photos", 400));
     }
     if (!name || !category || !price || !stock) {
@@ -137,8 +139,7 @@ export const newProduct = TryCatch(
       });
       return next(new ErrorHandler("All fields are required", 400));
     }
-const photosURL = await uploadToCloudinary(photos);
-console.log(photosURL);
+    const photosURL = await uploadToCloudinary(photos);
 
     await Product.create({
       name,
@@ -146,7 +147,7 @@ console.log(photosURL);
       price,
       stock,
       photos: photosURL,
-    }); 
+    });
     invalidateCache({ product: true, admin: true });
     return res.status(201).json({
       success: true,
@@ -158,25 +159,27 @@ export const updateProduct = TryCatch(async (req, res, next) => {
   const { id } = req.params;
   const { name, category, price, stock } = req.body;
   // console.log(name, category, price, stock);
-  const photo = req.file;
+ const photos = req.files as Express.Multer.File[] | undefined;
   const product = await Product.findById(id);
   if (!product) {
     return next(new ErrorHandler("product not found!!", 404));
   }
 
-  if (photo) {
-    rm(product.photo!, () => {
-      console.log("old Photo deleted");
-    });
-    product.photo = photo.path;
+ if (photos && photos.length > 0) {
+    const photosURL = await uploadToCloudinary(photos);
+
+    const ids = product.photos.map((photo) => photo.public_id);
+
+    await deleteFromCloudinary(ids);
+
+    product.photos = photosURL;
   }
-
+  if (!name && !category && !price && !stock && !photos) {
+    return next(new ErrorHandler("Please provide at least one field to update", 400));
+  }
   if (name) product.name = name;
-
   if (price) product.price = price;
-
   if (stock) product.stock = stock;
-
   if (category) product.category = category;
 
   await product.save();
@@ -199,9 +202,9 @@ export const delteProduct = TryCatch(async (req: Request, res, next) => {
   if (!product) {
     return next(new ErrorHandler("Product not existed", 400));
   }
-  rm(product.photo, () => {
-    console.log("Product photo deleted");
-  });
+  const ids = product.photos.map((photo) => photo.public_id);
+  await deleteFromCloudinary(ids);
+
   await product.deleteOne();
 
   invalidateCache({
