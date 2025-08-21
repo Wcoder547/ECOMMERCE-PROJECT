@@ -120,7 +120,7 @@ export const getSingleProduct = TryCatch(async (req: Request, res, next) => {
 //Revalidate on new,update,delete product & new order
 export const newProduct = TryCatch(
   async (req: Request<{}, {}, newProductRequestBody>, res, next) => {
-    const { name, category, price, stock } = req.body;
+    const { name, category, price, stock, description } = req.body;
     // console.log(name, category, price, stock);
     const photos = req.files as Express.Multer.File[] | undefined;
     if (!photos) return next(new ErrorHandler("Please Add photos", 400));
@@ -131,7 +131,7 @@ export const newProduct = TryCatch(
     if (photos.length > 5) {
       return next(new ErrorHandler("You can only upload five photos", 400));
     }
-    if (!name || !category || !price || !stock) {
+    if (!name || !category || !price || !stock || !description) {
       photos.forEach((photo) => {
         rm(photo.path, () => {
           console.log("photo deleted");
@@ -144,6 +144,7 @@ export const newProduct = TryCatch(
     await Product.create({
       name,
       category: category.toLowerCase().trim(),
+      description,
       price,
       stock,
       photos: photosURL,
@@ -157,7 +158,7 @@ export const newProduct = TryCatch(
 );
 export const updateProduct = TryCatch(async (req, res, next) => {
   const { id } = req.params;
-  const { name, category, price, stock } = req.body;
+  const { name, category, price, stock ,description } = req.body;
   // console.log(name, category, price, stock);
  const photos = req.files as Express.Multer.File[] | undefined;
   const product = await Product.findById(id);
@@ -174,13 +175,14 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
     product.photos = photosURL;
   }
-  if (!name && !category && !price && !stock && !photos) {
+  if (!name && !category && !price && !stock && !photos && !description) {
     return next(new ErrorHandler("Please provide at least one field to update", 400));
   }
   if (name) product.name = name;
   if (price) product.price = price;
   if (stock) product.stock = stock;
   if (category) product.category = category;
+  if (description) product.description = description;
 
   await product.save();
   invalidateCache({

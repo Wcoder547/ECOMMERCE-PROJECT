@@ -17,7 +17,22 @@ export type  product = {
     url: string;
   }[];  
   _id: string;
+  ratings: number;
+  description: string;
 };
+
+export type Review = {
+  rating: number;
+  comment: string;
+  product: string;
+  user: {
+    name: string;
+    photo: string;
+    _id: string;
+  };
+  _id: string;
+};
+
 export type products = {
   name: string;
   price: number;
@@ -59,5 +74,10 @@ export type Order = {
     name: string;
     _id: string;
   };
+  _id: string;
+};
+export type CouponType = {
+  code: string;
+  amount: number;
   _id: string;
 };

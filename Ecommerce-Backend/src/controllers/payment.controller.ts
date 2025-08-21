@@ -29,13 +29,13 @@ export const createPaymentIntent = TryCatch(async (req, res, next) => {
 
 
 export const newCoupon = TryCatch(async (req, res, next) => {
-  const { coupon, amount } = req.body;
-  if (!coupon || !amount) {
+  const { code, amount } = req.body;
+  if (!code || !amount) {
     return next(
       new ErrorHandler("Please Enter both Coupon and amount fields", 400)
     );
   }
-  const existingCoupon = await Coupon.findOne({ code: coupon });
+  const existingCoupon = await Coupon.findOne({ code });
   if (existingCoupon) {
     return next(
       new ErrorHandler(
@@ -45,15 +45,60 @@ export const newCoupon = TryCatch(async (req, res, next) => {
     );
   }
   await Coupon.create({
-    code: coupon,
+    code,
     amount,
   });
 
   return res.status(201).json({
     success: true,
-    message: `Coupon ${coupon} created successfully`,
+    message: `Coupon ${code} created successfully`,
   });
 });
+export const updateCoupon = TryCatch(async (req, res, next) => {
+  const { id } = req.params; // coupon id
+  const { code, amount } = req.body;
+
+  if (!code || !amount) {
+    return next(
+      new ErrorHandler("Please provide atleast Coupon code or amount", 400)
+    );
+  }
+
+  const coupon = await Coupon.findById(id);
+
+  if (!coupon) {
+    return next(new ErrorHandler("Coupon not found", 404));
+  }
+
+  const existingCoupon = await Coupon.findOne({ code, _id: { $ne: id } });
+  if (existingCoupon) {
+    return next(
+      new ErrorHandler("Coupon code already exists. Use a different code.", 400)
+    );
+  }
+
+  coupon.code = code;
+  coupon.amount = amount;
+
+  await coupon.save();
+
+  return res.status(200).json({
+    success: true,
+    message: `Coupon ${code} updated successfully`,
+  });
+});
+export const getCoupon = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  const coupon = await Coupon.findById(id);
+  if (!coupon) {
+    return next(new ErrorHandler("Coupon not found", 404));
+  }
+  return res.status(200).json({
+    success: true,
+    coupon,
+  });
+});
+
 export const applyDiscount = TryCatch(async (req, res, next) => {
   const { coupon } = req.query;
   console.log(coupon);

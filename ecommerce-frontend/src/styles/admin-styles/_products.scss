@@ -3,6 +3,7 @@
   padding: 2rem;
   overflow: auto;
   @include square(100%);
+  max-height: 65vh;
 }
 
 .create-product-btn {
@@ -31,10 +32,7 @@
   top: -1.2rem;
   right: -1.2rem;
 }
-.product-delete-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+
 .product-management {
   @include flex(row, center, unset);
   padding: 4rem;
@@ -114,7 +112,8 @@
           top: -1.5rem;
         }
 
-        > input {
+        > input,
+        > textarea {
           @include inputStyle(
             100%,
             1rem,
@@ -122,6 +121,7 @@
             1px solid rgba(13, 13, 13, 0.196)
           );
           border-radius: 5px;
+          max-height: 10rem;
         }
       }
 

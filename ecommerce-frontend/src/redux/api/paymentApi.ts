@@ -1,10 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import {
-  NewCouponResponse,
-  AllCouponResponse,
-  DiscountResponse,
-  PaymentIntentResponse,
-} from "../../types/api-types";
+
 
 export const paymentApi = createApi({
   reducerPath: "paymentApi",
@@ -13,7 +8,7 @@ export const paymentApi = createApi({
   }),
   endpoints: (builder) => ({
     // create payment intent
-    createPaymentIntent: builder.mutation<PaymentIntentResponse, { amount: number }>({
+    createPaymentIntent: builder.mutation({
       query: (body) => ({
         url: "create",
         method: "POST",
@@ -22,24 +17,41 @@ export const paymentApi = createApi({
     }),
 
     // create new coupon
-   newCoupon: builder.mutation<NewCouponResponse, { coupon: string; amount: number }>({
-  query: (body) => ({
-    url: "coupon/new",
+   newCoupon: builder.mutation({
+  query: ({id,body}) => ({
+    url: `coupon/new?id=${id}`,
     method: "POST",
     body,
   }),
 }),
 
     // apply discount
-    applyDiscount: builder.query<DiscountResponse, { code: string }>({
+    applyDiscount: builder.query({
       query: ({ code }) => `discount?code=${code}`,
       keepUnusedDataFor: 0,
     }),
 
     // get all coupons
-    allCoupon: builder.query<AllCouponResponse, void>({
-      query: () => "coupon/all",
+    allCoupon: builder.query({
+      query: (id) => `coupon/all?id=${id}`,
       keepUnusedDataFor: 0,
+    }),
+    //get-coupon
+    getCoupon: builder.query({
+      query: (id) => `coupon/${id}`,
+      keepUnusedDataFor: 0,
+    }),
+
+    //update coupon
+    updateCoupon: builder.mutation<{
+      success: boolean;
+      message: string;
+    }, { couponId: string; body: any }>({
+      query: ({ couponId, body }) => ({
+        url: `coupon/${couponId}`,
+        method: "PUT",
+        body,
+      }),
     }),
 
     // delete coupon
@@ -57,5 +69,7 @@ export const {
   useNewCouponMutation,
   useApplyDiscountQuery,
   useAllCouponQuery,
+  useGetCouponQuery,
+  useUpdateCouponMutation,
   useDeleteCouponMutation,
 } = paymentApi;

@@ -1,4 +1,4 @@
-import { cartItem, Order,product,products, shippingInfo, User } from "./types";
+import { cartItem, CouponType, Order,product,products, shippingInfo, User } from "./types";
 
 export type messageResponse = {
   success: boolean;
@@ -81,4 +81,13 @@ export type allOrdersResponse = {
 export type orderDetailsResponse = {
   success: boolean;
   order: Order;
+};
+export type AllDiscountResponse = {
+  success: boolean;
+  coupons: CouponType[];
+};
+
+export type SingleDiscountResponse = {
+  success: boolean;
+  coupon: CouponType;
 };

@@ -21,20 +21,23 @@ const NewProduct = () => {
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(1000);
   const [stock, setStock] = useState<number>(1);
-    const [newproduct] = useNewProductMutation();
+  const [description, setDescription] = useState<string>("");
 
+
+  const [newproduct] = useNewProductMutation();
   const photos = useFileHandler("multiple", 10, 5);
 
   const submitHnadler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
      try {
-    if (!name || !category || !price || !stock) {
+    if (!name || !category || !price || !stock || !description) {
       return;
     }
     if (!photos.file || photos.file.length === 0) return;
     const formData = new FormData();
     formData.set("name", name);
+     formData.set("description", description);
     formData.set("price", price.toString());
     formData.set("stock", stock.toString());
     formData.set("category", category);
@@ -68,6 +71,15 @@ const NewProduct = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+              <div>
+              <label>Description</label>
+              <textarea
+                required
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div>

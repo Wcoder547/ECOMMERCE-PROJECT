@@ -1,49 +1,50 @@
 import { FormEvent, useEffect, useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-import { useNewCouponMutation } from "../../../redux/api/paymentApi"; // adjust path
-import { toast } from "react-hot-toast";
 
+const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const allNumbers = "1234567890";
+const allSymbols = "!@#$%^&*()_+";
 
 const Coupon = () => {
+  const [size, setSize] = useState<number>(8);
+  const [prefix, setPrefix] = useState<string>("");
+  const [includeNumbers, setIncludeNumbers] = useState<boolean>(false);
+  const [includeCharacters, setIncludeCharacters] = useState<boolean>(false);
+  const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
 
- const [coupon, setCoupon] = useState("");
-const [amount, setAmount] = useState(""); // keep as string
-const [generatedCoupon, setGeneratedCoupon] = useState("");
-const [isCopied, setIsCopied] = useState(false);
-const [newCouponMutation, { isLoading }] = useNewCouponMutation();
+  const [coupon, setCoupon] = useState<string>("");
 
-const handleCopy = () => {
-  if (!generatedCoupon) return;
-  navigator.clipboard.writeText(generatedCoupon);
-  toast.success("Coupon copied!");
-};
+  const copyText = async (coupon: string) => {
+    await window.navigator.clipboard.writeText(coupon);
+    setIsCopied(true);
+  };
 
-const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  //  console.log(coupon,amount)
-  if (!coupon || !amount) {
-    console.log(coupon,amount)
-    toast.error("Please fill all fields");
-    return;
-  }
+  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  try {
-    const res = await newCouponMutation({
-      coupon,
-      amount: Number(amount), 
-    }).unwrap();
-    console.log(res.message); //
+    if (!includeNumbers && !includeCharacters && !includeSymbols)
+      return alert("Please Select One At Least");
 
-    toast.success(res.message || "Coupon generated successfully!");
-    setGeneratedCoupon(coupon);
-    setCoupon("");
-    setAmount("");
-  } catch (error: any) {
-    console.log(error?.data?.message)
-    toast.error(error?.data?.message || "Failed to generate coupon");
-  }
-};
+    let result: string = prefix || "";
+    const loopLength: number = size - result.length;
 
+    for (let i = 0; i < loopLength; i++) {
+      let entireString: string = "";
+      if (includeCharacters) entireString += allLetters;
+      if (includeNumbers) entireString += allNumbers;
+      if (includeSymbols) entireString += allSymbols;
+
+      const randomNum: number = ~~(Math.random() * entireString.length);
+      result += entireString[randomNum];
+    }
+
+    setCoupon(result);
+  };
+
+  useEffect(() => {
+    setIsCopied(false);
+  }, [coupon]);
 
   return (
     <div className="admin-container">
@@ -54,29 +55,54 @@ const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
           <form className="coupon-form" onSubmit={submitHandler}>
             <input
               type="text"
-              placeholder="coupon"
-              value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
-        
+              placeholder="Text to include"
+              value={prefix}
+              onChange={(e) => setPrefix(e.target.value)}
+              maxLength={size}
             />
 
             <input
               type="number"
-              placeholder="Enter amount"
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
-              min={1}
-              max={2500}
+              placeholder="Coupon Length"
+              value={size}
+              onChange={(e) => setSize(Number(e.target.value))}
+              min={8}
+              max={25}
             />
+
+            <fieldset>
+              <legend>Include</legend>
+
+              <input
+                type="checkbox"
+                checked={includeNumbers}
+                onChange={() => setIncludeNumbers((prev) => !prev)}
+              />
+              <span>Numbers</span>
+
+              <input
+                type="checkbox"
+                checked={includeCharacters}
+                onChange={() => setIncludeCharacters((prev) => !prev)}
+              />
+              <span>Characters</span>
+
+              <input
+                type="checkbox"
+                checked={includeSymbols}
+                onChange={() => setIncludeSymbols((prev) => !prev)}
+              />
+              <span>Symbols</span>
+            </fieldset>
             <button type="submit">Generate</button>
           </form>
 
-            {generatedCoupon && (
+          {coupon && (
             <code>
-              {generatedCoupon} 
-              <span onClick={handleCopy}>
+              {coupon}{" "}
+              <span onClick={() => copyText(coupon)}>
                 {isCopied ? "Copied" : "Copy"}
-              </span>
+              </span>{" "}
             </code>
           )}
         </section>

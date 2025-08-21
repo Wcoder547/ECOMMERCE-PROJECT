@@ -21,12 +21,13 @@ const Productmanagement = () => {
   const params = useParams();
 
   const { data, isLoading, isError } = useProductDetailsQuery(params.id!);
-  const { price, photos, name, category, stock } = data?.product || {
+  const { price, photos, name, category, stock , description } = data?.product || {
    photos: [],
     category: "",
     name: "",
     stock: 0,
     price: 0,
+    description: "",  
   };
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
@@ -38,7 +39,8 @@ const Productmanagement = () => {
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
   const [nameUpdate, setNameUpdate] = useState<string>(name);
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
-
+  const [descriptionUpdate, setDescriptionUpdate] =
+    useState<string>(description);
 
 
 
@@ -97,6 +99,7 @@ const Productmanagement = () => {
       setPriceUpdate(data.product.price);
       setStockUpdate(data.product.stock);
       setCategoryUpdate(data.product.category);
+       setDescriptionUpdate(data.product.description);
     }
   }, [data]);
 
@@ -134,6 +137,15 @@ const Productmanagement = () => {
                     placeholder="Name"
                     value={nameUpdate}
                     onChange={(e) => setNameUpdate(e.target.value)}
+                  />
+                </div>
+                 <div>
+                  <label>Description</label>
+                  <textarea
+                    required
+                    placeholder="Description"
+                    value={descriptionUpdate}
+                    onChange={(e) => setDescriptionUpdate(e.target.value)}
                   />
                 </div>
                 <div>

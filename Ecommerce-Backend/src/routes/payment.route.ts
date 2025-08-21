@@ -5,7 +5,10 @@ import {
   createPaymentIntent,
   deleteCoupon,
   newCoupon,
+  updateCoupon,
+  getCoupon
 } from "../controllers/payment.controller.js";
+import { AdminOnly } from "../middlewares/auth.middleware.js";
 const app = express.Router();
 
 //route - /api/v1/payment/create
@@ -17,6 +20,6 @@ app.get("/discount", applyDiscount);
 //route - /api/v1/payment/coupon/all
 app.get("/coupon/all", allCoupon);
 //route - /api/v1/payment/coupon/:id
-app.delete("/coupon/:id", deleteCoupon);
+app.route("/coupon/:id").get(getCoupon).delete(deleteCoupon).put(updateCoupon);
 
 export default app;
