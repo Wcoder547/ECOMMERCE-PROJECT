@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
-import Loader from "./components/loader";
+import  { Skeleton } from "./components/loader";
 import { Toaster } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
@@ -9,6 +9,7 @@ import { userExist, userNotExist } from "./redux/reducer/userReducer";
 import { getUser } from "./redux/api/userApi";
 import { userReducerInitialState } from "./types/reducer-types";
 import ProtectedRoute from "./components/protectedRoute";
+
 
 const Home = lazy(() => import("./pages/home"));
 const Search = lazy(() => import("./pages/search"));
@@ -20,6 +21,7 @@ const Orders = lazy(() => import("./pages/orders"));
 const NotFound = lazy(() => import("./pages/not-found"));
 const CheckOut = lazy(() => import("./pages/checkout"));
 const ProductDetails = lazy(() => import("./pages/product-details"));
+const Footer = lazy(() => import("./components/footer"));
 
 //Admin routes imports
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -68,7 +70,7 @@ const App = () => {
     <Router>
       {/* header */}
       <Header user={user} />
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<Skeleton />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
@@ -135,6 +137,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      <Footer />
       <Toaster position="bottom-center" />
     </Router>
   );

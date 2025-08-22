@@ -9,6 +9,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   user-select: none;
 }
@@ -17,6 +18,14 @@ a {
   text-decoration: none;
   color: black;
 }
+
+button {
+  &:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5;
+  }
+}
+
 $color1: white;
 $color2: rgb(46, 46, 46);
 $color3: rgb(0, 104, 136);
@@ -32,18 +41,19 @@ $color3: rgb(0, 104, 136);
 }
 
 @import "admin-styles/mixin";
-
 @import "home";
 @import "cart";
 @import "shipping";
 @import "login";
 @import "search";
 @import "product-details";
+@import "footer";
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
 @import "admin-styles/chart";
 @import "admin-styles/dashboardapp";
 @import "admin-styles/mediaquery";
+
 .container {
   max-width: 1367px;
   width: 100%;
@@ -61,41 +71,44 @@ $color3: rgb(0, 104, 136);
   margin: 1rem 0;
   text-align: center;
 }
+
 .header {
-  @include flex(row, flex-end, stretch, 1.5rem);
+  @include flex(row, flex-end, stretch, 1.2rem);
   padding: 1rem;
   a {
     color: $color2;
-    font: size 1.2rem;
     letter-spacing: 2px;
+    font-size: 1.2rem;
 
     &:hover {
       color: $color3;
     }
   }
+
   button {
     border: none;
-    background-color: transparent;
     font-size: 1.2rem;
     cursor: pointer;
-
+    background-color: transparent;
     &:hover {
       color: $color3;
     }
   }
+
   dialog {
     border: 1px solid #ccc;
-    border-radius: 3px;
-    padding-right: 3px;
-    width: 80px;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100px;
     position: absolute;
-    left: calc(100% - 75px);
+    left: calc(100% - 100px);
     top: 8%;
     > div {
-      @include flex(column, justify-start, center, 0.5rem);
+      @include flex(column, flex-start, center, 0.25rem);
     }
   }
 }
+
 .not-found {
   height: 80vh;
   @include flex(column);
@@ -105,12 +118,17 @@ $color3: rgb(0, 104, 136);
 }
 
 .checkout-container {
-  max-width: 400px;
+  height: 80vh;
   width: 100%;
   margin: auto;
+  @include flex;
+
   > form {
     @include flex(column, flex-start, stretch, 2rem);
-
+    max-width: 400px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+    padding: 4rem;
+    border-radius: 6px;
     > button {
       @include btn(1rem, $color3, $color1);
       width: 100%;
@@ -270,7 +288,7 @@ $color3: rgb(0, 104, 136);
 
 .loader {
   width: 100%;
-  height: 100vh;
+  height: 85vh;
   @include flex;
   > div {
     @include square(10rem);
@@ -283,17 +301,18 @@ $color3: rgb(0, 104, 136);
   }
 }
 
-.skelton-loader {
+.skeleton-loader {
   display: flex;
   flex-direction: column;
 }
-.skelton-shape {
-  height: 30%;
+
+.skeleton-shape {
+  height: 30px;
   width: 100%;
   background-color: #ddd;
   margin-bottom: 10px;
   border-radius: 4px;
-  animation: skelton-loading 1.5s infinite;
+  animation: skeleon-loading 1.5s infinite;
 }
 
 @keyframes loading-animation {
@@ -306,7 +325,8 @@ $color3: rgb(0, 104, 136);
     transform: translate(-50%, -20%);
   }
 }
-@keyframes skelton-loading {
+
+@keyframes skeleon-loading {
   0% {
     opacity: 0.6;
   }

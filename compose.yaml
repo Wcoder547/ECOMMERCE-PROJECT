@@ -19,6 +19,49 @@ services:
     volumes:
       - redis_data:/data
 
+  backend:
+    build:
+      context: ./Ecommerce-Backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      MONGO_URI: mongodb://admin:password@mongodb
+      REDIS_URI: redis://redis
+    env_file:
+      - ./Ecommerce-Backend/.env
+    depends_on:
+      - mongodb
+      - redis
+    develop:
+      watch:
+        - path: ./Ecommerce-Backend/package*.json
+          action: rebuild
+        - path: ./Ecommerce-Backend
+          target: /app
+          action: sync
+
+  front-end:
+    build:
+      context: ./Ecommerce-Frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:4000
+    env_file:
+      - ./Ecommerce-Frontend/.env
+    depends_on:
+      - backend
+    develop:
+      watch:
+        - path: ./Ecommerce-Frontend/package*.json
+          action: rebuild
+        - path: ./Ecommerce-Frontend
+          target: /app
+          action: sync
+
 volumes:
   mongodb_data:
     driver: local
