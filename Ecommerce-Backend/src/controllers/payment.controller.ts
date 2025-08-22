@@ -8,7 +8,9 @@ export const createPaymentIntent = TryCatch(async (req, res, next) => {
   const { amount } = req.body;
 
   if (!amount) {
-    return res.status(400).json({ success: false, message: "Please enter amount" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Please enter amount" });
   }
 
   try {
@@ -26,7 +28,6 @@ export const createPaymentIntent = TryCatch(async (req, res, next) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 });
-
 
 export const newCoupon = TryCatch(async (req, res, next) => {
   const { code, amount } = req.body;
@@ -54,6 +55,7 @@ export const newCoupon = TryCatch(async (req, res, next) => {
     message: `Coupon ${code} created successfully`,
   });
 });
+
 export const updateCoupon = TryCatch(async (req, res, next) => {
   const { id } = req.params; // coupon id
   const { code, amount } = req.body;
@@ -87,6 +89,7 @@ export const updateCoupon = TryCatch(async (req, res, next) => {
     message: `Coupon ${code} updated successfully`,
   });
 });
+
 export const getCoupon = TryCatch(async (req, res, next) => {
   const { id } = req.params;
   const coupon = await Coupon.findById(id);
@@ -98,7 +101,6 @@ export const getCoupon = TryCatch(async (req, res, next) => {
     coupon,
   });
 });
-
 export const applyDiscount = TryCatch(async (req, res, next) => {
   const { coupon } = req.query;
   console.log(coupon);

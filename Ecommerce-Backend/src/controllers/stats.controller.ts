@@ -1,4 +1,4 @@
-import { nodeCache } from "../app.js";
+import { nodeCache, redis, redisTTL } from "../app.js";
 import { TryCatch } from "../middlewares/error.middlware.js";
 import { Product } from "../models/product.model.js";
 import { User } from "../models/user.model.js";
@@ -9,12 +9,15 @@ import {
   getInventories,
 } from "../utils/features.js";
 
-
 export const getDashboardStats = TryCatch(async (req, res, next) => {
   let stats;
-  if (nodeCache.has("admin-stats")) {
-    stats = JSON.parse(nodeCache.get("admin-stats") as string);
-  } else {
+
+  const key = "admin-stats";
+
+  stats = await redis.get(key);
+
+  if (stats) stats = JSON.parse(stats);
+  else {
     const today = new Date();
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -96,7 +99,10 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
     );
 
     const changePercentage = {
-      revenue: calCulatePercentage(thisMonthOrderRevenue, lastMonthOrderRevenue),
+      revenue: calCulatePercentage(
+        thisMonthOrderRevenue,
+        lastMonthOrderRevenue
+      ),
       product: calCulatePercentage(
         thisMonthProducts.length,
         lastMonthProducts.length
@@ -123,8 +129,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
 
     lastSixMonthOrders.forEach((order) => {
       const creationDate = order.createdAt as Date;
-      const monthDiff =
-        (today.getMonth() - creationDate.getMonth() + 12) % 12;
+      const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
 
       if (monthDiff < 6) {
         orderMonthCounts[6 - monthDiff - 1] += 1;
@@ -167,20 +172,18 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       latestTransactions: modifiedLatestTransaction,
     };
 
-    nodeCache.set("admin-stats", JSON.stringify(stats));
+    await redis.setex(key, redisTTL, JSON.stringify(stats));
   }
 
   return res.status(200).json({ success: true, stats });
 });
 
 export const getPieStats = TryCatch(async (req, res, next) => {
-  const cacheKey = "admin-pie-charts";
   let charts;
-
-  // ✅ Return cached data if available
-  if (nodeCache.has(cacheKey)) {
-    charts = nodeCache.get(cacheKey);
-  } else {
+  const key = "admin-pie-charts";
+  charts = await redis.get(key);
+  if (charts) charts = JSON.parse(charts);
+  else {
     // Fetch fresh data
     const allOrderPromise = Order.find({}).select([
       "total",
@@ -283,8 +286,7 @@ export const getPieStats = TryCatch(async (req, res, next) => {
       adminCustomer,
     };
 
-    // Save to cache
-    nodeCache.set(cacheKey, charts);
+    await redis.setex(key, redisTTL, JSON.stringify(charts));
   }
 
   return res.status(200).json({
@@ -294,45 +296,56 @@ export const getPieStats = TryCatch(async (req, res, next) => {
 });
 export const getBarStats = TryCatch(async (req, res, next) => {
   let charts;
-  if (nodeCache.has("admin-bar-charts")) {
-  charts = nodeCache.get("admin-bar-charts"); // already an object
-} else {
-  const today = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-  const twelveMonthsAgo = new Date();
-  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+  const key = "admin-bar-charts";
 
-  const [products, users, orders] = await Promise.all([
-    Product.find({ createdAt: { $gte: sixMonthsAgo, $lte: today } }).select("createdAt"),
-    User.find({ createdAt: { $gte: sixMonthsAgo, $lte: today } }).select("createdAt"),
-    Order.find({ createdAt: { $gte: twelveMonthsAgo, $lte: today } }).select("createdAt"),
-  ]);
+  charts = await redis.get(key);
 
-  const productCounts = getChartData({ length: 6, docArr: products, today });
-  const usersCounts = getChartData({ length: 6, docArr: users, today });
-  const ordersCounts = getChartData({ length: 6, docArr: orders, today });
+  if (charts) charts = JSON.parse(charts);
+  else {
+    const today = new Date();
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
 
-  charts = {
-    users: usersCounts,
-    product: productCounts,
-    order: ordersCounts,
-  };
+    const [products, users, orders] = await Promise.all([
+      Product.find({ createdAt: { $gte: sixMonthsAgo, $lte: today } }).select(
+        "createdAt"
+      ),
+      User.find({ createdAt: { $gte: sixMonthsAgo, $lte: today } }).select(
+        "createdAt"
+      ),
+      Order.find({ createdAt: { $gte: twelveMonthsAgo, $lte: today } }).select(
+        "createdAt"
+      ),
+    ]);
 
-  nodeCache.set("admin-bar-charts", charts); // store as object
-}
+    const productCounts = getChartData({ length: 6, docArr: products, today });
+    const usersCounts = getChartData({ length: 6, docArr: users, today });
+    const ordersCounts = getChartData({ length: 6, docArr: orders, today });
 
-return res.status(200).json({
-  success: true,
-  charts, // send object directly
-});
+    charts = {
+      users: usersCounts,
+      product: productCounts,
+      order: ordersCounts,
+    };
 
+    await redis.setex(key, redisTTL, JSON.stringify(charts));
+  }
+
+  return res.status(200).json({
+    success: true,
+    charts, // send object directly
+  });
 });
 export const getLineStats = TryCatch(async (req, res, next) => {
   let charts;
-  if (nodeCache.has("admin-line-charts")) {
-    charts =(nodeCache.get("admin-bar-charts") as string);
-  } else {
+  const key = "admin-line-charts";
+
+  charts = await redis.get(key);
+
+  if (charts) charts = JSON.parse(charts);
+  else {
     const today = new Date();
 
     const twelveMonthsAgo = new Date();
@@ -370,7 +383,7 @@ export const getLineStats = TryCatch(async (req, res, next) => {
       discount,
       revenue,
     };
-    nodeCache.set("admin-line-charts",(charts));
+    await redis.setex(key, redisTTL, JSON.stringify(charts));
   }
   return res.status(200).json({
     success: true,

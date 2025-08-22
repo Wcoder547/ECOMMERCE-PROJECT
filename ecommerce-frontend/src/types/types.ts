@@ -12,6 +12,7 @@ export type  product = {
   price: number;
   stock: number;
   category: string;
+  numOfReviews: number;
   photos:{
     public_id: string;
     url: string;
@@ -20,6 +21,7 @@ export type  product = {
   ratings: number;
   description: string;
 };
+
 
 export type Review = {
   rating: number;

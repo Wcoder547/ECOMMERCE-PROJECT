@@ -1,6 +1,8 @@
 import express from "express";
 import { multipleUpload } from "../middlewares/multer.middleware.js";
 import {
+  allReviewsOfProduct,
+  deleteReview,
   delteProduct,
   getAdminProducts,
   getAllProducts,
@@ -8,6 +10,7 @@ import {
   getLatestProduct,
   getSingleProduct,
   newProduct,
+  newReview,
   updateProduct,
 } from "../controllers/product.controller.js";
 import { AdminOnly } from "../middlewares/auth.middleware.js";
@@ -32,5 +35,13 @@ app
   .get(getSingleProduct)
   .put(AdminOnly, multipleUpload, updateProduct)
   .delete(AdminOnly, delteProduct);
+
+
+
+  //Reviews-routes
+  app.get("/reviews/:id", allReviewsOfProduct);
+app.post("/review/new/:id", newReview);
+app.delete("/review/:id", deleteReview);
+
 
 export default app;

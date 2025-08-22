@@ -1,5 +1,5 @@
 import express from "express";
-import connectDb from "./utils/features.js";
+import connectDb, { connectRedis } from "./utils/features.js";
 import userRouter from "./routes/user.route.js";
 import productRoute from "./routes/product.route.js";
 import orderRoute from "./routes/order.route.js";
@@ -12,27 +12,28 @@ import Stripe from "stripe";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 
-
 config({
   path: "./.env",
 });
 const port = process.env.PORT || 4000;
 const stripeKey = process.env.STRIPE_KEY || "";
+
 const app = express();
 app.use(morgan("dev"));
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 export const stripe = new Stripe(stripeKey);
 export const nodeCache = new NodeCache();
 app.get("/", (req, res) => {
   res.send("API working with/api/v1");
 });
-
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -41,10 +42,12 @@ cloudinary.config({
 });
 
 app.use("/uploads", express.static("uploads"));
-
+export const redisTTL = process.env.REDIS_TTL || 60 * 60 * 4;
+const redisURI = process.env.REDIS_URL || "redis://localhost:6379";
+export const redis = connectRedis(redisURI);
 connectDb()
   .then(() => {
-    app.on("Erorr", (err) => {
+    app.on("Error", (err) => {
       console.error("Error:", err);
       throw err;
     });

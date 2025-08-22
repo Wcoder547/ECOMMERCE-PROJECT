@@ -5,13 +5,13 @@ interface IUser extends Document {
   _id: string;
   name: string;
   email: string;
-  photo: string;  // Use `string`, not `String`
+  photo: string; 
   role: "admin" | "user";
   gender: "male" | "female";
   dob: Date;
   createdAt: Date;
   updatedAt: Date;
-  age: number;  // Virtual age
+  age: number;
 }
 
 const userSchema = new mongoose.Schema(

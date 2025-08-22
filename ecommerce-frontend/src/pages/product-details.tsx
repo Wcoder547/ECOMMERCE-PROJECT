@@ -18,7 +18,7 @@ import { RootState } from "../redux/store";
 import { cartItem, Review } from "../types/types";
 import { responseToast } from "../utils/features";
 import RatingsComponent from "../components/ratings";
-import { useProductDetailsQuery } from "../redux/api/productApi";
+import { useAllReviewsOfProductsQuery, useDeleteReviewMutation, useNewReviewMutation, useProductDetailsQuery } from "../redux/api/productApi";
 
 const ProductDetails = () => {
   const params = useParams();
@@ -62,6 +62,7 @@ const ProductDetails = () => {
     Ratings: RatingsEditable,
     rating,
     setRating,
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useRating({
     IconFilled: <FaStar />,
     IconOutline: <FaRegStar />,

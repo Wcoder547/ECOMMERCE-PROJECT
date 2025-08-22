@@ -1,4 +1,13 @@
-import { cartItem, CouponType, Order,product,products, shippingInfo, User } from "./types";
+import {
+  cartItem,
+  CouponType,
+  Order,
+  product,
+  products,
+  Review,
+  shippingInfo,
+  User,
+} from "./types";
 
 export type messageResponse = {
   success: boolean;
@@ -18,7 +27,7 @@ export type UserResponse = {
 };
 export type latestProduct = {
   success: boolean;
-  latestProduct: product[];
+  products: product[];
 };
 export type categoriesResponse = {
   success: boolean;
@@ -50,6 +59,18 @@ export type deleteProductRequest = {
   productId: string;
 };
 
+export type NewReviewRequest = {
+  rating: number;
+  comment: string;
+  userId?: string;
+  productId: string;
+};
+
+export type DeleteReviewRequest = {
+  userId?: string;
+  reviewId: string;
+};
+
 export type productResponse = {
   success: boolean;
   products: products[];
@@ -69,6 +90,11 @@ export type NewOrderRequest = {
   total: number;
   user: string;
 };
+
+export type MessageResponse = {
+  success: boolean;
+  message: string;
+};
 export type updateOrderRequest = {
   userId: string;
   orderId: string;
@@ -78,6 +104,12 @@ export type allOrdersResponse = {
   success: boolean;
   orders: Order[];
 };
+
+export type AllReviewsResponse = {
+  success: boolean;
+  reviews: Review[];
+};
+
 export type orderDetailsResponse = {
   success: boolean;
   order: Order;

@@ -32,7 +32,7 @@ function Login() {
       });
 
       if ("data" in res) {
-        toast.success(res.data?.message!);
+        toast.success(res.data?.message || "Sign-in successful");
       } else {
         const error = res.error as FetchBaseQueryError;
         const message = (error.data as messageResponse).message;

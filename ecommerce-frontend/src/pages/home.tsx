@@ -9,7 +9,6 @@ import { addToCart } from "../redux/reducer/cartReducer";
 
 const Home = () => {
   const { data, isLoading, error } = useLatestProductsQuery("");
-  console.log(data);
 
   const dispatch = useDispatch();
   const addToCartHandler = (cartItem: cartItem) => {
@@ -39,7 +38,7 @@ const Home = () => {
                 key={i._id}
                 productId={i._id}
                 name={i.name}
-                photo={i.photos?.[0]?.url}
+                photos={i.photos}
                 price={i.price}
                 stock={i.stock}
                 handler={addToCartHandler}
