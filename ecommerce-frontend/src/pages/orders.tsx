@@ -54,7 +54,7 @@ const Orders = () => {
   const [rows, setRows] = useState<DataType[]>([]);
   if (isError) {
     const err = error as customError;
-    toast.error(err.data.message);
+    toast.error(err);
   }
 
   useEffect(() => {

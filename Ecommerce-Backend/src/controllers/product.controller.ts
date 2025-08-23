@@ -47,6 +47,7 @@ export const getAllProducts = TryCatch(
     let totalPage;
 
     const cachedData = await redis.get(key);
+
     if (cachedData) {
       const data = JSON.parse(cachedData);
       totalPage = data.totalPage;
@@ -71,7 +72,7 @@ export const getAllProducts = TryCatch(
       if (category) baseQuery.category = category;
 
       const [productsFetched, filteredOnlyProduct] = await Promise.all([
-        Product.find()
+        Product.find(baseQuery)
           .sort(sort && { price: sort === "asc" ? 1 : -1 })
           .limit(limit)
           .skip(skip),

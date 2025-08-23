@@ -96,15 +96,15 @@ export const invalidateCache = async ({
   orderId,
   productId,
 }: invalidateCacheProps) => {
-  console.log(review);
   if (review) {
     await redis.del([`reviews-${productId}`]);
   }
   if (product) {
     const productKeys: string[] = [
-      "latest-product",
+      "latest-products",
       "categories",
       "admin-products",
+      "all-products",
     ];
 
     if (typeof productId === "string") {

@@ -13,7 +13,6 @@ import {
   useOrderDetailsQuery,
   useUpdateOrderMutation,
 } from "../../../redux/api/orderApi";
-import { server } from "../../../redux/store";
 import { customError } from "../../../types/api-types";
 import { userReducerInitialState } from "../../../types/reducer-types";
 import { Order, orderitems } from "../../../types/types";
@@ -21,7 +20,6 @@ import { Skeleton } from "../../../components/loader";
 import { responseToast } from "../../../utils/features";
 
 // import { OrderItem } from "../../../models/types";
-// import { server } from "../../../redux/store";
 
 const defaultData: Order = {
   shippingInfo: {
@@ -107,7 +105,7 @@ const TransactionManagement = () => {
                 <ProductCard
                   key={i._id}
                   name={i.name}
-                  photo={`${server}/${i.photo}`}
+                  photo={i.photo}
                   productId={i.productId}
                   _id={i._id}
                   quantity={i.quantity}

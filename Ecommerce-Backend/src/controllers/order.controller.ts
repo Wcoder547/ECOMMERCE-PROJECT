@@ -64,21 +64,24 @@ export const newOrder = TryCatch(
 );
 export const myOrders = TryCatch(async (req, res, next) => {
   const { id: user } = req.query;
+  console.log(user);
   if (!user) {
     return next(new ErrorHandler("please provide ID", 400));
   }
-
   const key = `my-orders-${user}`;
   let orders;
   orders = await redis.get(key);
 
-  if (orders) orders = JSON.parse(orders);
-  else {
+  if (orders) {
+    orders = JSON.parse(orders);
+  } else {
     orders = await Order.find({ user });
+    console.log(orders);
+
     await redis.setex(key, redisTTL, JSON.stringify(orders));
   }
 
-  return res.status(201).json({
+  return res.status(200).json({
     success: true,
     orders,
   });
