@@ -1,10 +1,10 @@
-# ECOMMERCE-PROJECT
+# ECOMMERCE-WEB-APPLICATION
 
 ## Project Description
 
-ECOMMERCE-PROJECT is an open-source e-commerce platform built with the MERN stack (MongoDB, Express, React, Node.js). It includes a React-based user-facing site, a REST API backend using Express/Node, and a React admin dashboard. The project is written in TypeScript and uses Redux for predictable state management. Node.js serves as the server runtime, and Express provides the web framework for the API.
+ECOMMERCE-WEB-APPLICATION is an open-source e-commerce platform built with the MERN stack (MongoDB, Express, React, Node.js). It includes a React-based user-facing site, a REST API backend using Express/Node, and a React admin dashboard. The project is written in TypeScript and uses Redux for predictable state management. Node.js serves as the server runtime, and Express provides the web framework for the API.
 
-For authentication and payments, the app integrates Firebase Authentication (Google OAuth) and Stripe for secure payment processing. It uses Redis as an in-memory cache and session store for fast data access. Media and product images are stored on AWS (e.g. Amazon S3) for scalability and durability. The entire application is containerized with Docker for consistent development and production environments.
+For authentication and payments, the app integrates Firebase Authentication (Google OAuth) and Stripe for secure payment processing. It uses Redis as an in-memory cache and session store for fast data access. Media and product images are stored on Cloudinary for scalability and durability. The entire application is containerized with Docker for consistent development and production environments.
 
 ## Features
 
@@ -16,7 +16,7 @@ For authentication and payments, the app integrates Firebase Authentication (Goo
 * **Environment Config:** Separate configuration files using Vite (frontend) and Node (backend) setups.
 * **Caching & Sessions:** Redis is used to cache frequent queries and manage sessions for performance.
 * **Containerization:** Docker support for easy local setup and deployment.
-* **File Storage:** AWS (e.g. S3) is used for storing images and media files.
+* **File Storage:** Cloudinary is used for storing images and media files.
 
 ## Tech Stack
 
@@ -30,7 +30,7 @@ For authentication and payments, the app integrates Firebase Authentication (Goo
 * **Firebase** – Backend platform (Authentication) used for Google sign-in.
 * **Stripe** – Payment API for securely processing credit card transactions.
 * **Redis** – In-memory data store used for caching and session storage.
-* **AWS (S3)** – Cloud object storage service for media files.
+* **Cloudinary** – Cloudinary service for media files.
 * **Docker** – Container platform to run the app consistently across environments.
 
 ## Getting Started
@@ -38,50 +38,51 @@ For authentication and payments, the app integrates Firebase Authentication (Goo
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/ECOMMERCE-PROJECT.git
-   cd ECOMMERCE-PROJECT
+   git clone https://github.com/Wcoder547/ECOMMERCE-PROJECT.git
    ```
 2. **Setup Backend:**
 
    ```bash
-   cd backend
+   cd Ecommerce-Backend
    npm install
    npm run dev
    ```
 3. **Setup Frontend:**
 
    ```bash
-   cd ../frontend
-   npm install
-   npm run dev
-   ```
-4. **(Optional) Admin Dashboard:**
-
-   ```bash
-   cd ../admin
+   cd ecommerce-frontend
    npm install
    npm run dev
    ```
 
-This will start the backend server (usually on port 5000) and the frontend apps (Vite dev server, e.g. port 3000).
+This will start the backend server (usually on port 4000) and the frontend apps (Vite dev server, e.g. port 5173).
 
 ## Environment Variables
 
 **Frontend (.env):**
 
-* `VITE_API_URL` – URL of the backend API (e.g., `http://localhost:5000/api`)
-* `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, etc. – Firebase configuration for Google OAuth.
-* `VITE_STRIPE_PUBLIC_KEY` – Your Stripe publishable key for payments.
+   ```bash
+VITE_APIKEY=your_firebase_api_key  
+VITE_AUTHDOMAIN=your_project.firebaseapp.com  
+VITE_PROJECTID=your_project_id  
+VITE_STORAGEBUCKET=your_project.appspot.com  
+VITE_MESSAGINGSENDERID=your_sender_id  
+VITE_APPID=your_app_id  
+VITE_SERVER=your-server  
+   ```
+
 
 **Backend (.env):**
-
-* `NODE_ENV` – Environment (e.g., `development` or `production`)
-* `PORT` – Port on which the backend server runs (e.g., `5000`)
-* `MONGO_URI` – MongoDB connection string.
-* `REDIS_URL` – Redis connection URL (e.g., `redis://localhost:6379`).
-* `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` – Firebase service account credentials for verifying tokens.
-* `STRIPE_SECRET_KEY` – Your Stripe secret key.
-* `AWS_S3_BUCKET_NAME`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` – AWS S3 credentials and bucket name.
+   ```bash
+MONGODB_URI=your-mongodb
+PORT=4000  
+STRIPE_KEY=your_stripe_key  
+PRODUCT_PER_PAGE=8  
+CLOUDINARY_CLOUD_NAME=your_cloud_name  
+CLOUDINARY_API_KEY=your_api_key  
+CLOUDINARY_API_SECRET=your_api_secret  
+REDIS_URL=your_redis_url  
+   ```
 
 ## Docker Usage
 
@@ -93,34 +94,9 @@ docker-compose up --build
 
 This command builds the Docker images and starts all services (frontend, backend, Redis, etc.) in containers. Use `docker-compose down` to stop and remove the containers.
 
-## Folder Structure
+ ---
 
-```
-ECOMMERCE-PROJECT/
-├── backend/        # Node/Express API server (TypeScript)
-│   ├── src/        #  API routes, controllers, models, etc.
-│   ├── package.json
-│   └── tsconfig.json
-├── frontend/       # React user-facing site (TypeScript, Vite)
-│   ├── src/        #  Components, pages, redux store, etc.
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.ts
-├── admin/          # React admin dashboard (TypeScript, Vite)
-│   ├── src/        #  Components, pages, redux store, etc.
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.ts
-├── docker-compose.yml
-└── README.md
-```
+### 🔗 Connect with me  
 
-<!-- Add screenshots of the user frontend and admin dashboard here -->  
-
-## Contributing
-
-Contributions are welcome! If you’d like to contribute, please fork the repository, create a new branch for your feature or bug fix, and submit a pull request. You can also open issues for suggestions or bug reports. Please follow any existing code style and include tests or documentation for new features.
-
-## License
-
-This project is open source, and you are free to use it under the terms of the MIT license.
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/wasim-akram-dev/)  
+[![GitHub](https://img.shields.io/badge/GitHub-black?style=for-the-badge&logo=github)](https://github.com/wcoder547) 
