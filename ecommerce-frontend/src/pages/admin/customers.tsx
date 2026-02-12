@@ -9,10 +9,11 @@ import { Skeleton } from "../../components/loader";
 import {
   useAllUsersQuery,
   useDeleteUserMutation,
-} from "../../redux/api/userAPI";
+} from "../../redux/api/userApi";  
 import { RootState } from "../../redux/store";
-import { CustomError } from "../../types/api-types";
+import { customError } from "../../types/api-types";  // Changed: CustomError → customError
 import { responseToast } from "../../utils/features";
+
 
 interface DataType {
   avatar: ReactElement;
@@ -63,11 +64,10 @@ const Customers = () => {
     const res = await deleteUser({ userId, adminUserId: user?._id! });
     responseToast(res, null, "");
   };
-
-  if (isError) {
-    const err = error as CustomError;
-    toast.error(err.data.message);
-  }
+if (isError) {
+  const err = error as customError;
+  toast.error(err.data.message);
+}
 
   useEffect(() => {
     if (data)

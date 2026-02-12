@@ -7,21 +7,20 @@ export type User = {
   dob: string;
   _id: string;
 };
-export type  product = {
+export type product = {
   name: string;
   price: number;
   stock: number;
   category: string;
   numOfReviews: number;
-  photos:{
+  photos: {
     public_id: string;
     url: string;
-  }[];  
+  }[];
   _id: string;
   ratings: number;
   description: string;
 };
-
 
 export type Review = {
   rating: number;
@@ -40,19 +39,20 @@ export type products = {
   price: number;
   stock: number;
   category: string;
-  photos:{
+  photos: {
     public_id: string;
     url: string;
   }[];
   _id: string;
-}
+};
 export type shippingInfo = {
   address: string;
   city: string;
   province: string;
   country: string;
-  pincode: string;
+  pinCode: string;
 };
+
 export type cartItem = {
   productId: string;
   photo: string;

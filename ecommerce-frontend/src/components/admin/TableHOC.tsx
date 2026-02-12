@@ -10,7 +10,7 @@ import {
   TableOptions,
 } from "react-table";
 
-function TableHOC<T extends Object>(
+function TableHOC<T extends object>(
   columns: Column<T>[],
   data: T[],
   containerClassname: string,
@@ -23,7 +23,7 @@ function TableHOC<T extends Object>(
       data,
       initialState: {
         pageSize: 6,
-      },
+      } as any,  // Type assertion to fix react-table v7 typing
     };
 
     const {
@@ -38,7 +38,7 @@ function TableHOC<T extends Object>(
       previousPage,
       canNextPage,
       canPreviousPage,
-    } = useTable(options, useSortBy, usePagination);
+    } = useTable(options, useSortBy, usePagination) as any;
 
     return (
       <div className={containerClassname}>
@@ -46,12 +46,12 @@ function TableHOC<T extends Object>(
 
         <table className="table" {...getTableProps()}>
           <thead>
-            {headerGroups.map((headerGroup) => {
+            {headerGroups.map((headerGroup: any) => {
               const { key, ...restHeaderGroup } =
                 headerGroup.getHeaderGroupProps();
               return (
                 <tr key={key} {...restHeaderGroup}>
-                  {headerGroup.headers.map((column) => {
+                  {headerGroup.headers.map((column: any) => {
                     const {
                       key: colKey,
                       ...restColumn
@@ -76,12 +76,12 @@ function TableHOC<T extends Object>(
             })}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
+            {page.map((row: any) => {
               prepareRow(row);
               const { key: rowKey, ...restRow } = row.getRowProps();
               return (
                 <tr key={rowKey} {...restRow}>
-                  {row.cells.map((cell) => {
+                  {row.cells.map((cell: any) => {
                     const { key: cellKey, ...restCell } = cell.getCellProps();
                     return (
                       <td key={cellKey} {...restCell}>

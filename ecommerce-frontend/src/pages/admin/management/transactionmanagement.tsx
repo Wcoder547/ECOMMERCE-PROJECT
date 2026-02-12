@@ -19,15 +19,13 @@ import { Order, orderitems } from "../../../types/types";
 import { Skeleton } from "../../../components/loader";
 import { responseToast } from "../../../utils/features";
 
-// import { OrderItem } from "../../../models/types";
-
 const defaultData: Order = {
   shippingInfo: {
     address: "",
     city: "",
-    province: "",
+    province: "",     // Using province
     country: "",
-    pincode: "",
+    pinCode: "",
   },
   status: "",
   subtotal: 0,
@@ -52,7 +50,7 @@ const TransactionManagement = () => {
 
   const { data, isLoading, isError, error } = useOrderDetailsQuery(params.id!);
   const {
-    shippingInfo: { address, city, province, country, pincode },
+    shippingInfo: { address, city, province, country, pinCode },
     orderitems,
     user: { name },
     status,
@@ -61,7 +59,7 @@ const TransactionManagement = () => {
     total,
     discount,
     shippingCharges,
-  } = data?.order  || defaultData;
+  } = data?.order || defaultData;
 
   if (isError) {
     const err = error as customError;
@@ -123,7 +121,7 @@ const TransactionManagement = () => {
               <p>Name: {name}</p>
               <p>
                 Address:{" "}
-                {`${address}, ${city}, ${province}, ${country} ${pincode}`}
+                {`${address}, ${city}, ${province}, ${country} ${pinCode}`}
               </p>
               <h5>Amount Info</h5>
               <p>Subtotal: {subtotal}</p>

@@ -1,10 +1,9 @@
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { BarChart } from "../../../components/admin/Charts";
 import { RootState } from "../../../redux/store";
-import { useBarQuery } from "../../../redux/api/dashboardAPI";
-import { CustomError } from "../../../types/api-types";
+import { useBarQuery } from "../../../redux/api/dashboardApi";
+import { customError } from "../../../types/api-types";
 import toast from "react-hot-toast";
 import { Skeleton } from "../../../components/loader";
 import { getLastMonths } from "../../../utils/features";
@@ -16,14 +15,14 @@ const Barcharts = () => {
   const { isLoading, data, error, isError } = useBarQuery(user?._id ?? "");
 
   // Charts data comes as an object now, no parsing needed
-  const products = data?.charts?.product ?? [];
-  const orders = data?.charts?.order ?? [];
+  const products = data?.charts?.products ?? [];
+  const orders = data?.charts?.orders ?? [];
   const users = data?.charts?.users ?? [];
 
  
 
   if (isError) {
-    const err = error as CustomError;
+    const err = error as customError;
     toast.error(err.data.message);
   }
 

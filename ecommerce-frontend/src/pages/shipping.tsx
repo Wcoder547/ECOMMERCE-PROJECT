@@ -44,21 +44,23 @@ const Shipping = () => {
     }
   };
 
-  const [shippingInfo, setshippingInfo] = useState({
+  const [shippingInfo, setShippingInfo] = useState({
     address: "",
     city: "",
-    province: "",
+    province: "",     // Using province
     country: "",
-    pincode: "",
+    pinCode: "",
   });
+
   const chnageHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setshippingInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setShippingInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   useEffect(() => {
     if (cartItems.length <= 0) return navigate("/cart");
-  }, [cartItems,navigate]);
+  }, [cartItems, navigate]);
 
   return (
     <div className="shipping">
@@ -71,7 +73,7 @@ const Shipping = () => {
         <input
           type="text"
           name="address"
-          placeholder="Adress"
+          placeholder="Address"
           value={shippingInfo.address}
           onChange={chnageHandler}
           required
@@ -98,14 +100,14 @@ const Shipping = () => {
           required
           value={shippingInfo.country}
           onChange={chnageHandler}>
-          <option value="">Please select Your Countery</option>
+          <option value="">Please select Your Country</option>
           <option value="pakistan">Pakistan</option>
         </select>
         <input
           type="number"
-          name="pincode"
-          placeholder="PinCode"
-          value={shippingInfo.pincode}
+          name="pinCode"
+          placeholder="Pin Code"
+          value={shippingInfo.pinCode}
           onChange={chnageHandler}
           required
         />

@@ -47,14 +47,14 @@ const column: Column<DataType>[] = [
 
 const Orders = () => {
   const { user } = useSelector(
-    (state: { userReducer: userReducerInitialState }) => state.userReducer
+    (state: { userReducer: userReducerInitialState }) => state.userReducer,
   );
 
   const { data, isLoading, isError, error } = useMyordersQuery(user?._id || "");
   const [rows, setRows] = useState<DataType[]>([]);
   if (isError) {
     const err = error as customError;
-    toast.error(err);
+    toast.error(err.data.message);
   }
 
   useEffect(() => {
@@ -71,14 +71,14 @@ const Orders = () => {
                 i.status === "Processing"
                   ? "red"
                   : i.status === "Shipped"
-                  ? "green"
-                  : "purple"
+                    ? "green"
+                    : "purple"
               }>
               {i.status}
             </span>
           ),
           action: <Link to={`/admin/transaction/${i._id}`}>Manage</Link>,
-        }))
+        })),
       );
     }
   }, [data]);
@@ -87,7 +87,7 @@ const Orders = () => {
     rows,
     "dashboard-product-box",
     "Orders",
-    true
+    true,
   )();
   return (
     <div className="container">

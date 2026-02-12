@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { cartReducerInitialState } from "../../types/reducer-types";
 import { cartItem, shippingInfo } from "../../types/types";
-import CartItem from "../../components/cartItem";
 
 const initialState: cartReducerInitialState = {
   loading: false,
@@ -15,8 +14,8 @@ const initialState: cartReducerInitialState = {
     address: "",
     city: "",
     province: "",
-    countery: "",
-    pincode: "",
+    country: "",
+    pinCode: "",
   },
 };
 
@@ -27,7 +26,7 @@ export const cartReducer = createSlice({
     addToCart: (state, action: PayloadAction<cartItem>) => {
       state.loading = true;
       const index = state.cartItems.findIndex(
-        (i) => i.productId === action.payload.productId
+        (i) => i.productId === action.payload.productId,
       );
       if (index !== -1) state.cartItems[index] = action.payload;
       else state.cartItems.push(action.payload);
@@ -36,7 +35,7 @@ export const cartReducer = createSlice({
     removeToCart: (state, action: PayloadAction<string>) => {
       state.loading = true;
       state.cartItems = state.cartItems.filter(
-        (i) => i.productId !== action.payload
+        (i) => i.productId !== action.payload,
       );
       state.loading = false;
     },
@@ -44,7 +43,7 @@ export const cartReducer = createSlice({
     calculatePrice: (state) => {
       const subtotal = state.cartItems.reduce(
         (total, item) => total + item.price * item.quantity,
-        0
+        0,
       );
       state.subtotal = subtotal;
       state.shippingCharges = state.subtotal > 1000 ? 0 : 200;

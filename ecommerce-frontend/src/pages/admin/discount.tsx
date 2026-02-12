@@ -56,17 +56,18 @@ const Discount = () => {
   )();
 
 
-  useEffect(() => {
-    if (data)
-      setRows(
-        data.coupons.map((i) => ({
-          _id: i._id,
-          code: i.code,
-          amount: i.amount,
-          action: <Link to={`/admin/discount/${i._id}`}>Manage</Link>,
-        }))
-      );
-  }, [data]);
+useEffect(() => {
+  if (data)
+    setRows(
+      data.coupons.map((i: any) => ({
+        _id: i._id,
+        code: i.code,
+        amount: i.amount,
+        action: <Link to={`/admin/discount/${i._id}`}>Manage</Link>,
+      }))
+    );
+}, [data]);
+
 
   return (
     <div className="admin-container">

@@ -16,7 +16,7 @@ export const dashboardApi = createApi({
       query: (id) => `stats?id=${id}`,
       keepUnusedDataFor: 0,
     }),
-    pie: builder.query<PieResponse, string>({ 
+    pie: builder.query<PieResponse, string>({
       query: (id) => `pie?id=${id}`,
       keepUnusedDataFor: 0,
     }),

@@ -3,6 +3,17 @@ import { messageResponse, UserResponse } from "../../types/api-types";
 import { User } from "../../types/types";
 import axios from "axios";
 
+// Define missing types here (or import from api-types)
+export type DeleteUserRequest = {
+  userId: string;
+  adminUserId: string;
+};
+
+export type AllUsersResponse = {
+  success: boolean;
+  users: User[];
+};
+
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
@@ -10,7 +21,7 @@ export const userApi = createApi({
   }),
   tagTypes: ["users"],
   endpoints: (builder) => ({
-    login: builder.mutation<MessageResponse, User>({
+    login: builder.mutation<messageResponse, User>({
       query: (user) => ({
         url: "new",
         method: "POST",
@@ -19,7 +30,7 @@ export const userApi = createApi({
       invalidatesTags: ["users"],
     }),
 
-    deleteUser: builder.mutation<MessageResponse, DeleteUserRequest>({
+    deleteUser: builder.mutation<messageResponse, DeleteUserRequest>({
       query: ({ userId, adminUserId }) => ({
         url: `${userId}?id=${adminUserId}`,
         method: "DELETE",
@@ -33,17 +44,18 @@ export const userApi = createApi({
     }),
   }),
 });
+
 export const getUser = async (id: string): Promise<UserResponse> => {
   try {
     const { data }: { data: UserResponse } = await axios.get(
-      `${import.meta.env.VITE_SERVER}/api/v1/user/${id}`
+      `${import.meta.env.VITE_SERVER}/api/v1/user/${id}`,
     );
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       console.error(
         "Error fetching user:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
     } else {
       console.error("An unexpected error occurred:", error);
@@ -52,4 +64,5 @@ export const getUser = async (id: string): Promise<UserResponse> => {
   }
 };
 
-export const { useLoginMutation, useAllUsersQuery, useDeleteUserMutation} = userApi;
+export const { useLoginMutation, useAllUsersQuery, useDeleteUserMutation } =
+  userApi;
