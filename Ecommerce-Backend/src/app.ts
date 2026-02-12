@@ -1,3 +1,4 @@
+import apminsight from "apminsight";
 import express from "express";
 import connectDb, { connectRedis } from "./utils/features.js";
 import userRouter from "./routes/user.route.js";
@@ -26,7 +27,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 export const stripe = new Stripe(stripeKey);

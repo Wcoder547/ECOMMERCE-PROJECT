@@ -1,6 +1,15 @@
+version: "3.9"
+
+include:
+  - ./redis/docker-compose.yaml
+
+networks:
+  default:
+    driver: bridge
+
 services:
   mongodb:
-    image: mongo
+    image: mongo:latest
     container_name: mongodb
     ports:
       - "27017:27017"
@@ -9,31 +18,28 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - mongodb_data:/data/db
-
-  redis:
-    image: redis/redis-stack
-    container_name: redis
-    ports:
-      - "6379:6379"
-      - "8001:8001"
-    volumes:
-      - redis_data:/data
+    restart: unless-stopped
 
   backend:
     build:
       context: ./Ecommerce-Backend
       dockerfile: Dockerfile.dev
+    container_name: backend
     ports:
       - "4000:4000"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       NODE_ENV: development
-      MONGO_URI: mongodb://admin:password@mongodb
-      REDIS_URI: redis://redis
+      MONGO_URI: "mongodb://admin:password@mongodb:27017/ecommerce24?authSource=admin"
+      REDIS_URI: "redis://redis:6379"
     env_file:
       - ./Ecommerce-Backend/.env
     depends_on:
       - mongodb
       - redis
+    restart: unless-stopped
     develop:
       watch:
         - path: ./Ecommerce-Backend/package*.json
@@ -46,14 +52,19 @@ services:
     build:
       context: ./Ecommerce-Frontend
       dockerfile: Dockerfile.dev
+    container_name: frontend
     ports:
       - "5173:5173"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       VITE_API_URL: http://localhost:4000
     env_file:
       - ./Ecommerce-Frontend/.env
     depends_on:
       - backend
+    restart: unless-stopped
     develop:
       watch:
         - path: ./Ecommerce-Frontend/package*.json
@@ -64,6 +75,4 @@ services:
 
 volumes:
   mongodb_data:
-    driver: local
-  redis_data:
     driver: local

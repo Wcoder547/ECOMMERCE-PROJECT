@@ -7,8 +7,8 @@ import { Navigate } from "react-router-dom";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import { BarChart, DoughnutChart } from "../../components/admin/Charts";
 import Table from "../../components/admin/DashboardTable";
-import { Skeleton } from '../../components/loader';
-import { useStatsQuery } from "../../redux/api/dashboardAPI";
+import { Skeleton } from "../../components/loader";
+import { useStatsQuery } from "../../redux/api/dashboardApi";
 import { RootState } from "../../redux/store";
 import { getLastMonths } from "../../utils/features";
 
@@ -89,14 +89,14 @@ const Dashboard = () => {
 
                 <div>
                   {stats.categoryCount.map((i, idx) => (
-                  <CategoryItem
-                    key={idx}
-                    value={`${i.count}`}
-                    heading={i.category}
-                    color={`hsl(${idx * 60}, 70%, 50%)`}
-/>
+                    <CategoryItem
+                      key={idx}
+                      value={i.count}
+                      heading={i.category}
+                      color={`hsl(${idx * 60}, 70%, 50%)`}
+                    />
                   ))}
-                  </div>
+                </div>
               </div>
             </section>
 
@@ -162,13 +162,11 @@ const WidgetItem = ({
         ${color} ${(Math.abs(percent) / 100) * 360}deg,
         rgb(255, 255, 255) 0
       )`,
-      }}
-    >
+      }}>
       <span
         style={{
           color,
-        }}
-      >
+        }}>
         {percent > 0 && `${percent > 10000 ? 9999 : percent}%`}
         {percent < 0 && `${percent < -10000 ? -9999 : percent}%`}
       </span>
@@ -188,8 +186,7 @@ const CategoryItem = ({ color, value, heading }: CategoryItemProps) => (
     style={{
       marginBottom: "1rem",
       fontFamily: "sans-serif",
-    }}
-  >
+    }}>
     {/* Heading */}
     <h5 style={{ marginBottom: "0.3rem" }}>{heading}</h5>
 
@@ -201,8 +198,7 @@ const CategoryItem = ({ color, value, heading }: CategoryItemProps) => (
         borderRadius: "8px",
         overflow: "hidden",
         position: "relative",
-      }}
-    >
+      }}>
       {/* Progress bar fill */}
       <div
         style={{
@@ -211,8 +207,7 @@ const CategoryItem = ({ color, value, heading }: CategoryItemProps) => (
           height: "100%",
           borderRadius: "8px",
           transition: "width 0.5s ease-in-out",
-        }}
-      ></div>
+        }}></div>
     </div>
 
     {/* Percentage text */}
@@ -221,6 +216,5 @@ const CategoryItem = ({ color, value, heading }: CategoryItemProps) => (
     </span>
   </div>
 );
-
 
 export default Dashboard;

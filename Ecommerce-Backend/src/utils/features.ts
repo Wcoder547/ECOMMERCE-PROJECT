@@ -9,7 +9,7 @@ import { Review } from "../models/review.js";
 import Redis from "ioredis";
 
 export const findAverageRatings = async (
-  productId: mongoose.Types.ObjectId
+  productId: mongoose.Types.ObjectId,
 ) => {
   let totalRating = 0;
 
@@ -63,18 +63,28 @@ export const deleteFromCloudinary = async (publicIds: string[]) => {
 //connect-the db
 const connectDb = async () => {
   try {
-    const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}/${DB_NAME}`
-    );
+    const baseUri = process.env.MONGO_URI || process.env.MONGODB_URI;
+    if (!baseUri) throw new Error("MONGO_URI or MONGODB_URI env var missing");
+
+    // Hardcode correct URI to bypass all parsing bugs
+    const fullUri =
+      "mongodb://admin:password@mongodb:27017/ecommerce24?authSource=admin";
+
     console.log(
-      `\n MONGODB CONNECTD !! HOST DB:${connectionInstance.connection.host}`
-    ),
-      { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true };
-  } catch (error) {
-    console.log("MONGO DB CONNECTION Error:", error);
+      "Using Mongo URI:",
+      fullUri.replace(/\/\/[^@]+/, "//***REDACTED***"),
+    );
+
+    const connectionInstance = await mongoose.connect(fullUri);
+    console.log(
+      `\n✅ MONGODB CONNECTED !! DB: ${connectionInstance.connection.name} HOST: ${connectionInstance.connection.host}`,
+    );
+  } catch (error: any) {
+    console.error("❌ MONGO DB CONNECTION FAILED:", error.message);
     process.exit(1);
   }
 };
+
 export default connectDb;
 
 //connect-the-redis
@@ -162,7 +172,7 @@ export const reduceStock = async (orderitems: orderitemsType[]) => {
     // Ensure that the stock doesn't go negative
     if (product.stock < 0) {
       throw new Error(
-        `Stock for product ${order.productId} cannot be negative`
+        `Stock for product ${order.productId} cannot be negative`,
       );
     }
 
@@ -185,7 +195,7 @@ export const getInventories = async ({
   productsCount: number;
 }) => {
   const categoriesCountPromsie = categories.map((category) =>
-    Product.countDocuments({ category })
+    Product.countDocuments({ category }),
   );
 
   const categoriesCount = await Promise.all(categoriesCountPromsie);

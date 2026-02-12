@@ -151,7 +151,9 @@ const Home = () => {
   return (
     <>
       <div className="home">
-        <section></section>
+        <section>
+          
+        </section>
 
  <div>
           <aside>
