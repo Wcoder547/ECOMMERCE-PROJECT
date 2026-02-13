@@ -44,8 +44,12 @@ cloudinary.config({
 
 app.use("/uploads", express.static("uploads"));
 export const redisTTL = process.env.REDIS_TTL || 60 * 60 * 4;
-const redisURI = process.env.REDIS_URL || "redis://localhost:6379";
+
+// ✅ FIXED: Check both REDIS_URI and REDIS_URL, use redis hostname for Docker
+const redisURI =
+  process.env.REDIS_URI || process.env.REDIS_URL || "redis://redis:6379";
 export const redis = connectRedis(redisURI);
+
 connectDb()
   .then(() => {
     app.on("Error", (err) => {

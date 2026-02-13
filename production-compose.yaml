@@ -1,0 +1,64 @@
+version: "3.9"
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    image: waseemmalik547/ecommerce-backend:latest
+    container_name: backend
+    ports:
+      - "4000:4000"
+    environment:
+      MONGO_URI: "mongodb://admin:password@mongodb:27017/ecommerce24?authSource=admin"
+      REDIS_URI: "redis://redis:6379"
+      PORT: 4000
+
+      STRIPE_KEY: ${STRIPE_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+    depends_on:
+      - mongodb
+      - redis
+    restart: unless-stopped
+
+  frontend:
+    image: waseemmalik547/ecommerce-frontend:latest
+    container_name: frontend
+    ports:
+      - "4173:4173"
+    environment:
+      VITE_API_URL: http://${PUBLIC_IP}:4000
+
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local

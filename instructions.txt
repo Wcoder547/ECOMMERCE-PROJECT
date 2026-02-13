@@ -1,0 +1,20 @@
+Free domain:- http://freedns.afraid.org/subdomain/
+
+My website:- https://ecommerce-fullstack.chickenkiller.com/
+
+ec2-instance:- 44.193.192.239
+
+Nginx:- https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-22-04
+https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04
+
+
+production-composer.yaml
+.env.production
+
+in ec2 -> ecommerce-app folder -> compose.yaml,.env
+docker compose up -d
+
+/etc/nginx/sites-enabled$ nano default -> nginx.conf
+sudo nginx -t
+
+sudo systemctl reload nginx
