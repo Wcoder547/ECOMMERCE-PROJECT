@@ -1,102 +1,279 @@
-# ECOMMERCE-WEB-APPLICATION
+# Ecommerce Web Application
 
-## Project Description
+> Full-stack MERN e-commerce platform with Stripe payments, Google OAuth, Redis caching, and an admin analytics dashboard — fully containerized with Docker.
 
-ECOMMERCE-WEB-APPLICATION is an open-source e-commerce platform built with the MERN stack (MongoDB, Express, React, Node.js). It includes a React-based user-facing site, a REST API backend using Express/Node, and a React admin dashboard. The project is written in TypeScript and uses Redux for predictable state management. Node.js serves as the server runtime, and Express provides the web framework for the API.
+![TypeScript](https://img.shields.io/badge/TypeScript-82%25-blue) ![Docker](https://img.shields.io/badge/Docker-ready-blue) ![Stripe](https://img.shields.io/badge/Stripe-integrated-purple) ![License](https://img.shields.io/badge/license-MIT-green)
 
-For authentication and payments, the app integrates Firebase Authentication (Google OAuth) and Stripe for secure payment processing. It uses Redis as an in-memory cache and session store for fast data access. Media and product images are stored on Cloudinary for scalability and durability. The entire application is containerized with Docker for consistent development and production environments.
+---
+
+## What is this?
+
+A production-ready e-commerce platform built with the MERN stack and TypeScript. It ships three independent apps from a single repository:
+
+- **Customer storefront** — browse products, apply coupons, checkout with Stripe
+- **REST API** — Express/Node backend with Redis caching and MongoDB persistence
+- **Admin dashboard** — order stats, product management, and category charts for the last 6 months
+
+Authentication is handled by Firebase (Google OAuth), media by Cloudinary, and the entire stack runs behind an Nginx reverse proxy inside Docker containers.
+
+---
 
 ## Features
 
-* **User Authentication:** Google OAuth sign-in via Firebase Auth for secure user login.
-* **Product Listing & Search:** Browse and search products by categories or keywords in real time.
-* **Discounts & Coupons:** Support for discount codes and promotions at checkout.
-* **Payments:** Secure payment processing with Stripe integration (PCI-compliant).
-* **Admin Dashboard:** Charts and statistics showing orders, products, and categories over the last 6 months.
-* **Environment Config:** Separate configuration files using Vite (frontend) and Node (backend) setups.
-* **Caching & Sessions:** Redis is used to cache frequent queries and manage sessions for performance.
-* **Containerization:** Docker support for easy local setup and deployment.
-* **File Storage:** Cloudinary is used for storing images and media files.
+- **Google OAuth** — sign in with Firebase Authentication, no passwords to manage
+- **Product search & filtering** — browse by category or keyword in real time
+- **Discount & coupon codes** — apply promotions at checkout
+- **Stripe payments** — PCI-compliant card processing
+- **Admin analytics** — 6-month charts for orders, revenue, products, and categories
+- **Redis caching** — frequent queries cached for fast response times
+- **Cloudinary media** — scalable image storage for product photos
+- **Dockerized** — `docker compose up` runs the full stack instantly
+- **AWS-deployable** — production compose file and Nginx config included
+
+---
 
 ## Tech Stack
 
-* **React** – A JavaScript library for building user interfaces.
-* **Redux** – A JS library for predictable global state management.
-* **Vite** – Modern build tool and dev server for frontend apps.
-* **TypeScript** – Superset of JavaScript with static typing for better maintainability.
-* **Node.js** – Server-side JavaScript runtime environment.
-* **Express** – Web framework for Node.js to create the REST API.
-* **MongoDB** – NoSQL document database for storing products, users, and orders.
-* **Firebase** – Backend platform (Authentication) used for Google sign-in.
-* **Stripe** – Payment API for securely processing credit card transactions.
-* **Redis** – In-memory data store used for caching and session storage.
-* **Cloudinary** – Cloudinary service for media files.
-* **Docker** – Container platform to run the app consistently across environments.
+| Layer          | Technology                                      |
+|----------------|-------------------------------------------------|
+| Frontend       | React 18, TypeScript, Redux, Vite, SCSS         |
+| Backend        | Node.js, Express, TypeScript                    |
+| Database       | MongoDB, Mongoose                               |
+| Cache/Sessions | Redis                                           |
+| Auth           | Firebase Authentication (Google OAuth)          |
+| Payments       | Stripe                                          |
+| Media          | Cloudinary                                      |
+| Proxy          | Nginx                                           |
+| DevOps         | Docker, Docker Compose, AWS                     |
+
+---
 
 ## Getting Started
 
-1. **Clone the repository:**
+### Option 1 — Docker (recommended)
 
-   ```bash
-   git clone https://github.com/Wcoder547/ECOMMERCE-PROJECT.git
-   ```
-2. **Setup Backend:**
+Requires: Docker + Docker Compose
 
-   ```bash
-   cd Ecommerce-Backend
-   npm install
-   npm run dev
-   ```
-3. **Setup Frontend:**
+```bash
+git clone https://github.com/Wcoder547/ECOMMERCE-PROJECT.git
+cd ECOMMERCE-PROJECT
+```
 
-   ```bash
-   cd ecommerce-frontend
-   npm install
-   npm run dev
-   ```
+Copy the environment variables (see [Environment Variables](#environment-variables) below), then:
 
-This will start the backend server (usually on port 4000) and the frontend apps (Vite dev server, e.g. port 5173).
+```bash
+docker compose up --build
+```
+
+| Service    | URL                      |
+|------------|--------------------------|
+| Frontend   | http://localhost:5173    |
+| Backend    | http://localhost:4000    |
+| Via Nginx  | http://localhost:80      |
+
+Stop everything:
+
+```bash
+docker compose down
+```
+
+---
+
+### Option 2 — Manual
+
+**Backend**
+
+```bash
+cd Ecommerce-Backend
+npm install
+npm run dev
+# Runs on http://localhost:4000
+```
+
+**Frontend** (separate terminal)
+
+```bash
+cd ecommerce-frontend
+npm install
+npm run dev
+# Runs on http://localhost:5173
+```
+
+Redis must be running locally or accessible via `REDIS_URL` in your `.env`.
+
+---
 
 ## Environment Variables
 
-**Frontend (.env):**
+### Frontend — `ecommerce-frontend/.env`
 
-   ```bash
-VITE_APIKEY=your_firebase_api_key  
-VITE_AUTHDOMAIN=your_project.firebaseapp.com  
-VITE_PROJECTID=your_project_id  
-VITE_STORAGEBUCKET=your_project.appspot.com  
-VITE_MESSAGINGSENDERID=your_sender_id  
-VITE_APPID=your_app_id  
-VITE_SERVER=your-server  
-   ```
-
-
-**Backend (.env):**
-   ```bash
-MONGODB_URI=your-mongodb
-PORT=4000  
-STRIPE_KEY=your_stripe_key  
-PRODUCT_PER_PAGE=8  
-CLOUDINARY_CLOUD_NAME=your_cloud_name  
-CLOUDINARY_API_KEY=your_api_key  
-CLOUDINARY_API_SECRET=your_api_secret  
-REDIS_URL=your_redis_url  
-   ```
-
-## Docker Usage
-
-If using Docker, ensure Docker is installed. A `docker-compose.yml` is provided for convenience. From the project root, you can run:
-
-```bash
-docker-compose up --build
+```env
+VITE_APIKEY=your_firebase_api_key
+VITE_AUTHDOMAIN=your_project.firebaseapp.com
+VITE_PROJECTID=your_project_id
+VITE_STORAGEBUCKET=your_project.appspot.com
+VITE_MESSAGINGSENDERID=your_sender_id
+VITE_APPID=your_app_id
+VITE_SERVER=http://localhost:4000
 ```
 
-This command builds the Docker images and starts all services (frontend, backend, Redis, etc.) in containers. Use `docker-compose down` to stop and remove the containers.
+Get Firebase values from your [Firebase Console](https://console.firebase.google.com/) → Project Settings → Your Apps.
 
- ---
+### Backend — `Ecommerce-Backend/.env`
 
-### 🔗 Connect with me  
+```env
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/ecommerce
+PORT=4000
+STRIPE_KEY=sk_test_your_stripe_secret_key
+PRODUCT_PER_PAGE=8
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+REDIS_URL=redis://localhost:6379
+```
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/wasim-akram-dev/)  
-[![GitHub](https://img.shields.io/badge/GitHub-black?style=for-the-badge&logo=github)](https://github.com/wcoder547) 
+---
+
+## Project Structure
+
+```
+ECOMMERCE-PROJECT/
+├── Ecommerce-Backend/
+│   ├── src/
+│   │   ├── controllers/       # Route handlers (products, orders, users)
+│   │   ├── models/            # Mongoose schemas
+│   │   ├── routes/            # Express route definitions
+│   │   ├── middlewares/       # Auth guard, error handler
+│   │   └── utils/             # Redis cache helpers, Cloudinary config
+│   └── Dockerfile
+├── ecommerce-frontend/
+│   ├── src/
+│   │   ├── components/        # Reusable UI components
+│   │   ├── pages/             # Storefront & admin pages
+│   │   ├── redux/             # Store, slices, RTK Query
+│   │   └── assets/
+│   └── Dockerfile
+├── redis/                     # Redis Docker config
+├── nginx.conf                 # Reverse proxy config
+├── compose.yaml               # Development compose
+├── production-compose.yaml    # AWS production compose
+└── Ecommerce-2025.postman_collection.json
+```
+
+---
+
+## API Reference
+
+A full Postman collection (`Ecommerce-2025.postman_collection.json`) is included in the root of the repository. Import it into [Postman](https://www.postman.com/) to explore and test every endpoint.
+
+### Auth
+
+| Method | Route               | Description              |
+|--------|---------------------|--------------------------|
+| POST   | `/api/v1/user/new`  | Register a new user      |
+| GET    | `/api/v1/user/:id`  | Get user profile         |
+
+### Products
+
+| Method | Route                          | Description                     |
+|--------|--------------------------------|---------------------------------|
+| GET    | `/api/v1/product/all`          | List all products (paginated)   |
+| GET    | `/api/v1/product/search`       | Search with filters & categories|
+| GET    | `/api/v1/product/:id`          | Get single product              |
+| POST   | `/api/v1/product/new`          | Create product (admin)          |
+| PUT    | `/api/v1/product/:id`          | Update product (admin)          |
+| DELETE | `/api/v1/product/:id`          | Delete product (admin)          |
+
+### Orders
+
+| Method | Route                          | Description                     |
+|--------|--------------------------------|---------------------------------|
+| POST   | `/api/v1/order/new`            | Place a new order               |
+| GET    | `/api/v1/order/my`             | Get current user's orders       |
+| GET    | `/api/v1/order/all`            | All orders (admin)              |
+| PUT    | `/api/v1/order/:id`            | Update order status (admin)     |
+
+### Payments
+
+| Method | Route                          | Description                     |
+|--------|--------------------------------|---------------------------------|
+| POST   | `/api/v1/payment/create`       | Create Stripe payment intent    |
+| POST   | `/api/v1/payment/coupon/new`   | Create a discount coupon        |
+| GET    | `/api/v1/payment/coupon/all`   | List all coupons (admin)        |
+| GET    | `/api/v1/payment/discount`     | Validate and apply a coupon     |
+
+### Admin Stats
+
+| Method | Route                          | Description                          |
+|--------|--------------------------------|--------------------------------------|
+| GET    | `/api/v1/dashboard/stats`      | Dashboard stats (orders, revenue)    |
+| GET    | `/api/v1/dashboard/pie`        | Category & order status breakdown    |
+| GET    | `/api/v1/dashboard/bar`        | 6-month bar chart data               |
+| GET    | `/api/v1/dashboard/line`       | 6-month line chart data              |
+
+All protected routes require `id` as a query param matching the authenticated Firebase UID.
+
+---
+
+## Redis Caching
+
+Redis caches responses for expensive queries — product lists, admin stats, and search results. Cache is invalidated automatically on create/update/delete operations.
+
+To inspect the cache during development:
+
+```bash
+docker exec -it redis redis-cli
+KEYS *
+GET <key>
+```
+
+---
+
+## Production Deployment (AWS)
+
+A dedicated `production-compose.yaml` and `nginx.conf` are provided for AWS deployment.
+
+```bash
+# On your EC2 instance
+git clone https://github.com/Wcoder547/ECOMMERCE-PROJECT.git
+cd ECOMMERCE-PROJECT
+# Add your .env files
+docker compose -f production-compose.yaml up -d
+```
+
+Nginx handles routing between the frontend and backend on port 80, with no CORS issues in production.
+
+---
+
+## Caveats & Limitations
+
+- Firebase Auth only supports Google OAuth — email/password login not implemented
+- No webhook handler for Stripe (failed payment recovery not handled)
+- Admin role is currently controlled by a hardcoded Firebase UID — no role management UI
+- Redis data is not persisted across container restarts by default
+
+---
+
+## Roadmap
+
+- [ ] Email/password auth alongside Google OAuth
+- [ ] Stripe webhooks for payment failure handling
+- [ ] Role-based admin management UI
+- [ ] Order email notifications
+- [ ] Product reviews & ratings
+
+---
+
+## Author
+
+**Waseem Akram** — [@Wcoder547](https://github.com/Wcoder547)
+
+Full-stack developer · MERN · Next.js · TypeScript
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://www.linkedin.com/in/wasim-akram-dev/)
+
+---
+
+## License
+
+[MIT](LICENSE)
